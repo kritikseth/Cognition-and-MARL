@@ -1,11 +1,10 @@
 import sys
-import time
 import pygame
 from RushHour4.core import Map
 from RushHour4.interact import Game
 
 blockSize = 50
-ROWS, COLS = 6, 9
+ROWS, COLS = 15, 20
 WINDOW_HEIGHT = blockSize * ROWS
 WINDOW_WIDTH = blockSize * COLS
 
@@ -29,12 +28,14 @@ def main():
     objects = (wall, path, path_rect, cop_1, cop_1_rect, cop_2, cop_2_rect, thief, thief_rect)
 
     map = Map(ROWS, COLS)
-    obstruct_ids = [12, 13, 21, 30, 20, 29, 33, 34, 42, 43, 7, 8]
+    obstruct_ids = [42, 43, 44, 45, 46, 64, 65, 66, 67, 68, 69, 281,
+                    85, 105, 125, 145, 170, 171, 172, 173, 191, 192,
+                    193, 282, 283, 237, 257, 277]
     for position in obstruct_ids:
         map.obstruct(position, index=True)
 
     game = Game(map, blockSize)
-    agents = {'1': 0, '2': 45, '0': 35}
+    agents = {'1': 0, '2': 129, '0': 35}
     game.initialize(agents)
     drawGrid(game.grid, objects)
     pygame.display.update()
