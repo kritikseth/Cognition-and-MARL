@@ -58,7 +58,7 @@ class Environment(BaseMap):
         actions = {self._up: 'up', self._down: 'down', self._left: 'left', self._right: 'right'}
         coordinates = [action(X, Y) for action in actions.keys()]
         states = [self._grid[X][Y] for X, Y in coordinates]
-        valid = [['up', 'down', 'left', 'right'][i] for i, s in enumerate(states) if s == 'o']
+        valid = [['up', 'down', 'left', 'right'][i] for i, s in enumerate(states) if s in ['o', 'x']]
         return valid
 
     def random_state(self):

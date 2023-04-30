@@ -31,11 +31,18 @@ class Game(Environment):
             self._grid[X][Y] = 'o'
             
             nx_idx = self.next(action, ind, index=True)
-            if nx_idx in self._agent_location.values():
+            check = [p for a, p in self._agent_location.items() if 'x' != a]
+            if nx_idx in check:
                 raise ValueError(f'Action: {action}, State: ({X}, {Y}) is invalid for Agent: {agent}')
             X, Y = self.to_coordinate(nx_idx)
-            self._grid[X][Y] = agent
-            self._agent_location[agent] = nx_idx
+            if self._grid[X][Y] == 'o':
+                self._grid[X][Y] = agent
+                self._agent_location[agent] = nx_idx
+            else:
+                current_agent = self._grid[X][Y]
+                if current_agent == 'x':
+                    self._agent_location[current_agent] = 'end'
+                    self._agent_location[agent] = 'end'
         
     def locate_agent(self, agent):
 
