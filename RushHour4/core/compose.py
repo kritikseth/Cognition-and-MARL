@@ -1,4 +1,5 @@
 from .base import BaseMap
+import random
 
 class Map(BaseMap):
 
@@ -59,6 +60,9 @@ class Environment(BaseMap):
         states = [self._grid[X][Y] for X, Y in coordinates]
         valid = [['up', 'down', 'left', 'right'][i] for i, s in enumerate(states) if s == 'o']
         return valid
+
+    def random_state(self):
+        return random.choice(self.valid_states)
 
     def _up(self, X, Y=None, index=False):
         if index:
