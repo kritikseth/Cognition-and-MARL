@@ -1,0 +1,21 @@
+TRAIN:
+
+EPISODES = 1_00_000
+EPSILON = 0.8
+SHOW = False
+
+qtable = None
+
+Comment Model Writing False
+
+###################################################
+
+TEST:
+
+EPISODES = 100
+EPSILON = 0
+SHOW = True
+
+qtable = initialize
+
+Comment Model Writing True
