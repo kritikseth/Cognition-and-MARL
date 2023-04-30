@@ -40,8 +40,8 @@ class Environment(BaseMap):
     @property
     def valid_states(self, index=True):
         coordinate = []
-        for row in self._grid:
-            for col in self._grid:
+        for row in range(self._rows):
+            for col in range(self._cols):
                 if self._grid[row][col] == 'o':
                     coordinate.append((row, col))
         
