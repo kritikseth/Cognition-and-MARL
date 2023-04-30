@@ -1,7 +1,7 @@
 import sys
 import time
 import pygame
-from RushHour4.setup import Map
+from RushHour4.core import Map
 from RushHour4.interact import Game
 
 COLORS = {'Black':(0, 0, 0),

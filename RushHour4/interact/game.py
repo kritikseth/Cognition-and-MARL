@@ -1,4 +1,4 @@
-from ..setup.compose import Environment
+from ..core.compose import Environment
 
 class Game(Environment):
 
