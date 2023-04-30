@@ -8,9 +8,9 @@ class Map(BaseMap):
     def obstruct(self, X, Y=None, index=False):
         if index:
             X, Y = self.to_coordinate(X)
-            self._grid[X][Y] = 'x'
+            self._grid[X][Y] = '[]'
         else:
-            self._grid[X][Y] = 'x'
+            self._grid[X][Y] = '[]'
     
     def save(self):
         return self._grid
