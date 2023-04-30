@@ -29,7 +29,7 @@ class Environment(BaseMap):
             self._start = 0
             self._end = self._rows * self._cols - 1
     
-    def _valid_actions(self, X, Y, action=None):
+    def _valid_state(self, X, Y, action=None):
         if self._grid[X][Y] != 'o':
             if action is not None:
                 raise ValueError(f'Action: {action}, State: ({X}, {Y}) is invalid!')
@@ -39,7 +39,7 @@ class Environment(BaseMap):
     def valid_actions(self, X, Y=None, index=False):
         if index:
             X, Y = self.to_coordinate(X)
-        self._valid_actions(X, Y)
+        self._valid_state(X, Y)
         
         actions = {self._up: 'up', self._down: 'down', self._left: 'left', self._right: 'right'}
         coordinates = [action(X, Y) for action in actions.keys()]
@@ -50,7 +50,7 @@ class Environment(BaseMap):
     def _up(self, X, Y=None, index=False):
         if index:
             X, Y = self.to_coordinate(X)
-        self._valid_actions(X, Y)
+        self._valid_state(X, Y)
         if X == 0: X = self._rows - 1
         else: X -= 1
         return (X, Y)
@@ -58,7 +58,7 @@ class Environment(BaseMap):
     def _down(self, X, Y=None, index=False):
         if index:
             X, Y = self.to_coordinate(X)
-        self._valid_actions(X, Y)
+        self._valid_state(X, Y)
         if X == self._rows - 1: X = 0
         else: X += 1
         return (X, Y)
@@ -66,7 +66,7 @@ class Environment(BaseMap):
     def _left(self, X, Y=None, index=False):
         if index:
             X, Y = self.to_coordinate(X)
-        self._valid_actions(X, Y)
+        self._valid_state(X, Y)
         if Y == 0: Y = self._cols - 1
         else: Y -= 1
         return (X, Y)
@@ -74,14 +74,14 @@ class Environment(BaseMap):
     def _right(self, X, Y=None, index=False):
         if index:
             X, Y = self.to_coordinate(X)
-        self._valid_actions(X, Y)
+        self._valid_state(X, Y)
         if Y == self._cols - 1: Y = 0
         else: Y += 1
         return (X, Y)
 
     def up(self, X, Y=None, index=False):
         X, Y = self._up(X, Y, index)
-        self._valid_actions(X, Y, 'up')
+        self._valid_state(X, Y, 'up')
 
         if index:
             return self.to_index(X, Y)
@@ -90,7 +90,7 @@ class Environment(BaseMap):
 
     def down(self, X, Y=None, index=False):
         X, Y = self._down(X, Y, index)
-        self._valid_actions(X, Y, 'down')
+        self._valid_state(X, Y, 'down')
 
         if index:
             return self.to_index(X, Y)
@@ -99,7 +99,7 @@ class Environment(BaseMap):
     
     def left(self, X, Y=None, index=False):
         X, Y = self._left(X, Y, index)
-        self._valid_actions(X, Y, 'left')
+        self._valid_state(X, Y, 'left')
 
         if index:
             return self.to_index(X, Y)
@@ -108,7 +108,7 @@ class Environment(BaseMap):
 
     def right(self, X, Y=None, index=False):
         X, Y = self._right(X, Y, index)
-        self._valid_actions(X, Y, 'right')
+        self._valid_state(X, Y, 'right')
 
         if index:
             return self.to_index(X, Y)
