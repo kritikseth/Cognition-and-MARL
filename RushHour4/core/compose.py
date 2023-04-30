@@ -84,7 +84,7 @@ class Environment(BaseMap):
         self._valid_state(X, Y, 'up')
 
         if index:
-            return self.to_index(X, Y)
+            return self.to_index((X, Y))
         else:
             return (X, Y)
 
@@ -93,7 +93,7 @@ class Environment(BaseMap):
         self._valid_state(X, Y, 'down')
 
         if index:
-            return self.to_index(X, Y)
+            return self.to_index((X, Y))
         else:
             return (X, Y)
     
@@ -102,7 +102,7 @@ class Environment(BaseMap):
         self._valid_state(X, Y, 'left')
 
         if index:
-            return self.to_index(X, Y)
+            return self.to_index((X, Y))
         else:
             return (X, Y)
 
@@ -111,7 +111,7 @@ class Environment(BaseMap):
         self._valid_state(X, Y, 'right')
 
         if index:
-            return self.to_index(X, Y)
+            return self.to_index((X, Y))
         else:
             return (X, Y)
 

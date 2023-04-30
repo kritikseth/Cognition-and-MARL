@@ -14,8 +14,8 @@ class BaseMap:
     def to_coordinate(self, idx):
         return (idx // self._cols, idx % self._cols)
     
-    def to_index(self, X, Y):
-        return X * self._cols + Y
+    def to_index(self, XY):
+        return XY[0] * self._cols + XY[1]
     
     def __str__(self):
         table = [' '.join(row) for row in self._grid]
