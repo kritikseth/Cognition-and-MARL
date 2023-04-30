@@ -41,7 +41,8 @@ class Environment(BaseMap):
         coordinate = []
         for row in self._grid:
             for col in self._grid:
-                coordinate.append((X, Y))
+                if self._grid[row][col] == 'o':
+                    coordinate.append((row, col))
         
         if index:
             return [self.to_index(c) for c in coordinate]
