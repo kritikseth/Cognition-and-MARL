@@ -5,17 +5,18 @@ import matplotlib.pyplot as plt
 import pickle
 from matplotlib import style
 import time
+from tqdm import trange
 
 style.use("ggplot")
 
 SIZE = 10
 SIGHT = 10
-EPISODES = 10_000
+EPISODES = 10_00_000
 MOVE_PENALTY = 1
 COLLISION_PENALTY = 100
 CATCH_REWARD = 200
 
-EPSILON = 1.0
+EPSILON = 0.6
 EPS_DECAY = 0.9998
 LEARNING_RATE = 0.1
 DISCOUNT = 0.95
@@ -203,7 +204,7 @@ thief = thief_class()
 catch_count1 = 0
 catch_count2 = 0
 
-for episode in range(EPISODES):
+for episode in trange(EPISODES):
     cop1.respawn()
     cop2.respawn()
     thief.respawn()
@@ -256,7 +257,7 @@ for episode in range(EPISODES):
         if reward == CATCH_REWARD or reward == -COLLISION_PENALTY:
             break
 
-    print(episode + 1, ": STEPS :", 200 - episode_reward)
+    # print(episode + 1, ": STEPS :", 200 - episode_reward)
     episode_rewards.append(episode_reward)
     EPSILON *= EPS_DECAY
 
