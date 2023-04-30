@@ -43,5 +43,9 @@ class BaseMap:
             table.append(row_index)
         self._display(table)
     
+    @property
+    def grid(self):
+        return self._grid
+    
     def view(self):
         self._display(self._grid)
