@@ -10,7 +10,7 @@ from tqdm import trange
 style.use("ggplot")
 
 SIZE = 10
-SIGHT = 10
+SIGHT = 5
 EPISODES = 10_00_000
 MOVE_PENALTY = 1
 COLLISION_PENALTY = 100
