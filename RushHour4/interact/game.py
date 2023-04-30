@@ -3,7 +3,7 @@ from ..core.compose import Environment
 class Game(Environment):
 
     def __init__(self, grid, block_size):
-        
+
         super().__init__(grid)
         self._block_size = block_size
     
@@ -31,6 +31,8 @@ class Game(Environment):
             self._grid[X][Y] = 'o'
             
             nx_idx = self.next(action, ind, index=True)
+            if nx_idx in self._agent_location.values():
+                raise ValueError(f'Action: {action}, State: ({X}, {Y}) is invalid for Agent: {agent}')
             X, Y = self.to_coordinate(nx_idx)
             self._grid[X][Y] = agent
             self._agent_location[agent] = nx_idx
