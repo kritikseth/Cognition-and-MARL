@@ -36,11 +36,12 @@ class Environment(BaseMap):
             else:
                 raise ValueError(f'Current State: ({X}, {Y}) is invalid!')
     
+    @property
     def valid_states(self, index=True):
         coordinate = []
         for row in self._grid:
             for col in self._grid:
-                ind.append((X, Y))
+                coordinate.append((X, Y))
         
         if index:
             return [self.to_index(c) for c in coordinate]
