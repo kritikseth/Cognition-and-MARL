@@ -54,11 +54,13 @@ def main():
         
         if agent in ['0', '1', '2'] and action != None:
             
-            game.update({agent: action})
-            agent, action = None, None
+            X, Y = game.locate_agent(agent)
+            if action in game.valid_actions(X, Y):
+                game.update({agent: action})
+                agent, action = None, None
 
-            drawGrid(game.grid, objects)
-            pygame.display.update()
+                drawGrid(game.grid, objects)
+                pygame.display.update()
 
         if agent == None:   
             action = None
