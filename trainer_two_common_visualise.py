@@ -20,7 +20,7 @@ EPS_DECAY = 0.9998
 LEARNING_RATE = 0.1
 DISCOUNT = 0.95
 
-SHOW_EVERY = 1
+SHOW_EVERY = 5
 SHOW = False
 
 COP_N = 1  
@@ -255,14 +255,9 @@ for episode in range(EPISODES):
 moving_avg = np.convolve(episode_rewards, np.ones((SHOW_EVERY,))/SHOW_EVERY, mode='valid')
 
 plt.plot([i for i in range(len(moving_avg))], moving_avg)
-plt.plot([i for i in range(len(episode_rewards))], episode_rewards)
 plt.ylabel(f"Reward {SHOW_EVERY}ma")
 plt.xlabel("episode #")
-plt.savefig("Graphs/two_common_performance.png")
 plt.show()
-
-# with open(f"Models/two_common_qtable.pickle", "wb") as f:
-#     pickle.dump(q_table, f)
 
 catch_count_total = (catch_count1 + catch_count2)
 print("Catching Percentage : Cop 1 :", catch_count1 * 100 / catch_count_total)
