@@ -1,4 +1,5 @@
 import sys
+import time
 import pygame
 from RushHour4.setup import Map
 from RushHour4.interact import Game
@@ -18,7 +19,7 @@ def main():
     global screen, CLOCK
     pygame.init()
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-    CLOCK = pygame.time.Clock()
+    clock = pygame.time.Clock()
     screen.fill(COLORS['Black'])
 
     map = Map(ROWS, COLS)
@@ -31,6 +32,9 @@ def main():
     game.initialize(agents)
 
     while True:
+        key = pygame.key.get_pressed()
+        agents = keyboardInput(key, agents)
+        game.update(agents)
         drawGrid(game.grid)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -39,21 +43,43 @@ def main():
 
         pygame.display.update()
 
+def keyboardInput(key, agents):
+    if key[pygame.K_w]: agents['cop1'] = 'up'
+    if key[pygame.K_s]: agents['cop1'] = 'down'
+    if key[pygame.K_a]: agents['cop1'] = 'left'
+    if key[pygame.K_d]: agents['cop1'] = 'right'
+
+    if key[pygame.K_t]: agents['cop2'] = 'up'
+    if key[pygame.K_g]: agents['cop2'] = 'down'
+    if key[pygame.K_f]: agents['cop2'] = 'left'
+    if key[pygame.K_h]: agents['cop2'] = 'right'
+
+    if key[pygame.K_i]: agents['thief'] = 'up'
+    if key[pygame.K_k]: agents['thief'] = 'down'
+    if key[pygame.K_j]: agents['thief'] = 'left'
+    if key[pygame.K_l]: agents['thief'] = 'right'
+
+    return agents
+    
+
 def drawGrid(grid):
+    cop1 = pygame.image.load('Images/cop1.png').convert_alpha()
+    cop2 = pygame.image.load('Images/cop2.png').convert_alpha()
+    thief = pygame.image.load('Images/thief.png').convert_alpha()
+
     X, Y = 0, 0
     for row in range(0, WINDOW_HEIGHT, blockSize):
         Y = 0
         for col in range(0, WINDOW_WIDTH, blockSize):
-            print(X, Y)
             rect = pygame.Rect(col, row, blockSize, blockSize)
             if grid[X][Y] == 'x':
                 pygame.draw.rect(screen, COLORS['Black'], rect, 1)
             if grid[X][Y] == 'a':
-                pygame.draw.rect(screen, COLORS['Blue'], rect, 1)
+                screen.blit(cop1, (col, row))
             if grid[X][Y] == 'b':
-                pygame.draw.rect(screen, COLORS['Green'], rect, 1)
+                screen.blit(cop2, (col, row))
             if grid[X][Y] == '*':
-                pygame.draw.rect(screen, COLORS['Red'], rect, 1)
+                screen.blit(thief, (col, row))
             if grid[X][Y] == 'o':
                 pygame.draw.rect(screen, COLORS['White'], rect, 1)
             Y += 1

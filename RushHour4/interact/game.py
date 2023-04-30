@@ -15,7 +15,7 @@ class Game(Environment):
     
     def update(self, actions):
 
-        for agent, action in actions:
+        for agent, action in actions.items():
             ind = self._agent_location[agent]
             nx_idx = self.next(action, ind, index=True)
             self._agent_location[agent] = nx_idx
