@@ -9,20 +9,27 @@ import time
 style.use("ggplot")
 
 SIZE = 10
-SIGHT = 5
-EPISODES = 5
+SIGHT = 10
+EPISODES = 10_000
 MOVE_PENALTY = 1
 COLLISION_PENALTY = 100
 CATCH_REWARD = 200
-epsilon = 0.0
+
+EPSILON = 1.0
 EPS_DECAY = 0.9998
+LEARNING_RATE = 0.1
+DISCOUNT = 0.95
+
 SHOW_EVERY = 1
-show = True
+SHOW = False
+
+COP_N = 1  
+THIEF_N = -1 
+AGENT_COLORS = {1: (255, 175, 0), -1: (0, 0, 255)}
 
 start_q_table = "Models/two_common_qtable.pickle" # None or Filename
+start_q_table = None # None or Filename
 
-def truncate(n):
-    return int((n * 1000) / 1000)
 if start_q_table is None:
     # initialize the q-table#
     q_table = {}
@@ -36,13 +43,6 @@ else:
     with open(start_q_table, "rb") as f:
         q_table = pickle.load(f)
 
-LEARNING_RATE = 0.1
-DISCOUNT = 0.95
-
-COP_N = 1  
-THIEF_N = -1 
-agent_colours = {1: (255, 175, 0), -1: (0, 0, 255)}
-
 class cop_class:
     def __init__(self):
         self.x = np.random.randint(0, SIZE)
@@ -54,9 +54,6 @@ class cop_class:
 
     def __str__(self):
         return f"{self.x}, {self.y}"
-
-    def sub(self, other):
-        return (self.x-other.x, self.y-other.y)
 
     def relative_position(self, other):
         x_val = other.x - self.x
@@ -109,7 +106,7 @@ class cop_class:
 
     def perform_action(self):
         self.obs = self.new_obs
-        if np.random.random() > epsilon:
+        if np.random.random() > EPSILON:
             self.direction = np.argmax(q_table[self.obs])
         else:
             self.direction = np.random.randint(0, 4)
@@ -137,9 +134,6 @@ class thief_class:
 
     def __str__(self):
         return f"{self.x}, {self.y}"
-
-    def sub(self, other):
-        return (self.x-other.x, self.y-other.y)
 
     def relative_position(self, other):
         x_val = other.x - self.x
@@ -206,7 +200,7 @@ for episode in range(EPISODES):
     cop1.respawn()
     cop2.respawn()
     thief.respawn()
-    print(q_table)
+
     episode_reward = 0
     cop1_caught = 0
     cop2_caught = 0
@@ -230,11 +224,11 @@ for episode in range(EPISODES):
         else:
             reward = -MOVE_PENALTY
 
-        if show:
+        if SHOW:
             env = np.zeros((SIZE, SIZE, 3), dtype=np.uint8)
-            env[thief.x][thief.y] = agent_colours[THIEF_N]
-            env[cop1.x][cop1.y] = agent_colours[COP_N] 
-            env[cop2.x][cop2.y] = agent_colours[COP_N] 
+            env[thief.x][thief.y] = AGENT_COLORS[THIEF_N]
+            env[cop1.x][cop1.y] = AGENT_COLORS[COP_N] 
+            env[cop2.x][cop2.y] = AGENT_COLORS[COP_N] 
             img = Image.fromarray(env, 'RGB')
             img = img.resize((300, 300))
             cv2.imshow("image", np.array(img)) 
@@ -257,18 +251,20 @@ for episode in range(EPISODES):
 
     print(episode + 1, ": STEPS :", 200 - episode_reward)
     episode_rewards.append(episode_reward)
-    epsilon *= EPS_DECAY
+    EPSILON *= EPS_DECAY
 
 moving_avg = np.convolve(episode_rewards, np.ones((SHOW_EVERY,))/SHOW_EVERY, mode='valid')
 
-# plt.plot([i for i in range(len(moving_avg))], moving_avg)
-# plt.plot([i for i in range(len(episode_rewards))], episode_rewards)
-# plt.ylabel(f"Reward {SHOW_EVERY}ma")
-# plt.xlabel("episode #")
-# plt.show()
+plt.plot([i for i in range(len(moving_avg))], moving_avg)
+plt.plot([i for i in range(len(episode_rewards))], episode_rewards)
+plt.ylabel(f"Reward {SHOW_EVERY}ma")
+plt.xlabel("episode #")
+plt.savefig("Graphs/two_common_performance.png")
+plt.show()
 
-# with open(f"Models/two_common_qtable.pickle", "wb") as f:
-#     pickle.dump(q_table, f)
+with open(f"Models/two_common_qtable.pickle", "wb") as f:
+    pickle.dump(q_table, f)
+
 catch_count_total = (catch_count1 + catch_count2)
 print("Catching Percentage : Cop 1 :", catch_count1 * 100 / catch_count_total)
 print("Catching Percentage : Cop 2 :", catch_count2 * 100 / catch_count_total)
