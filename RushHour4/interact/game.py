@@ -3,6 +3,7 @@ from ..core.compose import Environment
 class Game(Environment):
 
     def __init__(self, grid, block_size):
+        
         super().__init__(grid)
         self._block_size = block_size
     
@@ -15,6 +16,7 @@ class Game(Environment):
             self._grid[X][Y] = agent
     
     def _valid_state(self, X, Y, action=None):
+
         if self._grid[X][Y] == '[]':
             if action is not None:
                 raise ValueError(f'Action: {action}, State: ({X}, {Y}) is invalid!')
