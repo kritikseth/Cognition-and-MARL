@@ -7,11 +7,12 @@ class Game(Environment):
 
         super().__init__(grid)
         self._block_size = block_size
+        self._agent_location = {}
     
     def initialize(self, agents):
 
-        self._agent_location = agents
-        for agent, idx in agents.items():
+        self._agent_location.update(agents)
+        for agent, idx in self._agent_location.items():
             X, Y = self.to_coordinate(idx)
             self._valid_state(X, Y)
             self._grid[X][Y] = agent
