@@ -9,7 +9,11 @@ class Game(Environment):
         self._block_size = block_size
     
     def initialize(self):
-         self._agent_location = {}
+        self._agent_location = {}
+        self._grid = [['o']*self._cols for row in range(self._rows)]
+        if self._obstruct_idx != []:
+            for idx in self._obstruct_idx:
+                self.obstruct(idx, index=True)
 
     def setup_agents(self, agents):
 

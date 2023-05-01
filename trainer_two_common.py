@@ -226,6 +226,8 @@ catch_count1 = 0
 catch_count2 = 0
 
 for episode in trange(EPISODES):
+    if episode == 0.7 * EPISODES:
+        EPSILON = 0.7
     cop1.respawn()
     cop2.respawn()
     thief.respawn()

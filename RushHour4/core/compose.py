@@ -5,18 +5,21 @@ class Map(BaseMap):
 
     def __init__(self, rows=10, cols=10):
         super().__init__(rows, cols)
+        self._obstruct_idx = []
     
     def obstruct(self, X, Y=None, index=False):
         if index:
+            self._obstruct_idx.append(X)
             X, Y = self.to_coordinate(X)
             self._grid[X][Y] = '[]'
         else:
             self._grid[X][Y] = '[]'
+            self._obstruct_idx.append(self.to_index((X, Y)))
     
     def save(self):
         return self._grid
 
-class Environment(BaseMap):
+class Environment(Map):
 
     def __init__(self, grid):
         super().__init__()

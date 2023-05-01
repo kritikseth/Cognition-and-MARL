@@ -4,7 +4,7 @@ from RushHour4.core import Map
 from RushHour4.interact import Game
 
 blockSize = 50
-ROWS, COLS = 5, 8
+ROWS, COLS = 15, 30
 WINDOW_HEIGHT = blockSize * ROWS
 WINDOW_WIDTH = blockSize * COLS
 
@@ -27,23 +27,26 @@ def main():
     thief_rect = thief.get_rect()
     objects = (wall, path, path_rect, cop_1, cop_1_rect, cop_2, cop_2_rect, thief, thief_rect)
 
-    map = Map(ROWS, COLS)
+    mymap = Map(ROWS, COLS)
     # obstruct_ids = [42, 43, 44, 45, 46, 64, 65, 66, 67, 68, 69, 281,
     #                 85, 105, 125, 145, 170, 171, 172, 173, 191, 192,
     #                 193, 282, 283, 237, 257, 277]
     # for position in obstruct_ids:
-    #     map.obstruct(position, index=True)
+    #     mymap.obstruct(position, index=True)
 
-    game = Game(map, blockSize)
-    agents = {'1': 19, '2': 39, '0': 35}
-    game.initialize(agents)
+    game = Game(mymap, blockSize)
+    game.initialize()
+    game.setup_agents({'1': game.random_state()})
+    game.setup_agents({'2': game.random_state()})
+    game.setup_agents({'x': game.random_state()})
+    game.setup_agents(agents)
     drawGrid(game.grid, objects)
     pygame.display.update()
 
     while True:
         key = pygame.key.get_pressed()
 
-        if key[pygame.K_0]: agent = '0'
+        if key[pygame.K_0]: agent = 'x'
         if key[pygame.K_1]: agent = '1'
         if key[pygame.K_2]: agent = '2'
 
@@ -52,15 +55,14 @@ def main():
         if key[pygame.K_LEFT]: action = 'left'
         if key[pygame.K_RIGHT]: action = 'right'
         
-        if agent in ['0', '1', '2'] and action != None:
+        if agent in ['x', '1', '2'] and action != None:
             
             X, Y = game.locate_agent(agent, index=False)
-            if action in game.valid_actions(X, Y):
-                game.update({agent: action})
-                agent, action = None, None
+            game.update({agent: action})
+            agent, action = None, None
 
-                drawGrid(game.grid, objects)
-                pygame.display.update()
+            drawGrid(game.grid, objects)
+            pygame.display.update()
 
         if agent == None:   
             action = None
@@ -86,7 +88,7 @@ def drawGrid(grid, objects):
             if grid[X][Y] == '2':
                 cop_2_rect.topleft = (col, row)
                 screen.blit(cop_2, cop_2_rect)
-            if grid[X][Y] == '0':
+            if grid[X][Y] == 'x':
                 thief_rect.topleft = (col, row)
                 screen.blit(thief, thief_rect)
             if grid[X][Y] == 'o':
