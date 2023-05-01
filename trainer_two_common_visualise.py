@@ -6,7 +6,7 @@ import pickle
 from matplotlib import style
 import time
 
-style.use("ggplot")
+style.use('ggplot')
 
 SIZE = 10
 SIGHT = 5
@@ -27,7 +27,7 @@ COP_N = 1
 THIEF_N = -1 
 AGENT_COLORS = {1: (255, 175, 0), -1: (0, 0, 255)}
 
-start_q_table = "Models/two_common_qtable.pickle" # None or Filename
+start_q_table = 'Models/two_common_qtable.pickle' # None or Filename
 
 if start_q_table is None:
     # initialize the q-table#
@@ -39,7 +39,7 @@ if start_q_table is None:
                         q_table[((i, ii), (iii, iiii))] = [np.random.uniform(-5, 0) for i in range(4)]
 
 else:
-    with open(start_q_table, "rb") as f:
+    with open(start_q_table, 'rb') as f:
         q_table = pickle.load(f)
 
 class cop_class:
@@ -52,7 +52,7 @@ class cop_class:
         self.y = np.random.randint(0, SIZE)
 
     def __str__(self):
-        return f"{self.x}, {self.y}"
+        return f'{self.x}, {self.y}'
 
     def relative_position(self, other):
         x_val = 0
@@ -141,7 +141,7 @@ class thief_class:
         self.y = np.random.randint(0, SIZE)
 
     def __str__(self):
-        return f"{self.x}, {self.y}"
+        return f'{self.x}, {self.y}'
 
     def relative_position(self, other):
         x_val = 0
@@ -258,7 +258,7 @@ for episode in range(EPISODES):
             env[cop2.x][cop2.y] = AGENT_COLORS[COP_N] 
             img = Image.fromarray(env, 'RGB')
             img = img.resize((300, 300))
-            cv2.imshow("image", np.array(img)) 
+            cv2.imshow('image', np.array(img)) 
             if reward == CATCH_REWARD or reward == -COLLISION_PENALTY:
                 if cv2.waitKey(500) & 0xFF == ord('q'):
                     break
@@ -276,19 +276,19 @@ for episode in range(EPISODES):
         if reward == CATCH_REWARD or reward == -COLLISION_PENALTY:
             break
 
-    print(episode + 1, ": STEPS :", 200 - episode_reward)
+    print(episode + 1, ': STEPS :', 200 - episode_reward)
     episode_rewards.append(episode_reward)
     EPSILON *= EPS_DECAY
 
 moving_avg = np.convolve(episode_rewards, np.ones((SHOW_EVERY,))/SHOW_EVERY, mode='valid')
 
 plt.plot([i for i in range(len(moving_avg))], moving_avg)
-plt.ylabel(f"Reward {SHOW_EVERY}ma")
-plt.xlabel("episode #")
+plt.ylabel(f'Reward {SHOW_EVERY}ma')
+plt.xlabel('episode #')
 plt.show()
 
 catch_count_total = (catch_count1 + catch_count2)
-print("Catching Percentage : Cop 1 :", catch_count1 * 100 / catch_count_total)
-print("Catching Percentage : Cop 2 :", catch_count2 * 100 / catch_count_total)
-print("Catching Percentage : Total :", catch_count_total * 100 / EPISODES)
-print("Average Steps To Catch      :", 200 - (sum(episode_rewards)/len(episode_rewards)))
+print('Catching Percentage : Cop 1 :', catch_count1 * 100 / catch_count_total)
+print('Catching Percentage : Cop 2 :', catch_count2 * 100 / catch_count_total)
+print('Catching Percentage : Total :', catch_count_total * 100 / EPISODES)
+print('Average Steps To Catch      :', 200 - (sum(episode_rewards)/len(episode_rewards)))
