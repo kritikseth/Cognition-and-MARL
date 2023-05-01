@@ -4,7 +4,7 @@ from RushHour4.core import Map
 from RushHour4.interact import Game
 
 blockSize = 50
-ROWS, COLS = 15, 30
+ROWS, COLS = 15, 15
 WINDOW_HEIGHT = blockSize * ROWS
 WINDOW_WIDTH = blockSize * COLS
 
@@ -39,7 +39,6 @@ def main():
     game.setup_agents({'1': game.random_state()})
     game.setup_agents({'2': game.random_state()})
     game.setup_agents({'x': game.random_state()})
-    game.setup_agents(agents)
     drawGrid(game.grid, objects)
     pygame.display.update()
 
