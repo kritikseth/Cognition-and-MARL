@@ -61,9 +61,6 @@ class Environment(BaseMap):
         valid = [['up', 'down', 'left', 'right'][i] for i, s in enumerate(states) if s in ['o', 'x']]
         return valid
 
-    def random_state(self):
-        return random.choice(self.valid_states)
-
     def _up(self, X, Y=None, index=False):
         if index:
             X, Y = self.to_coordinate(X)

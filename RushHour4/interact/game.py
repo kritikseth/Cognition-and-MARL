@@ -1,4 +1,5 @@
 from ..core.compose import Environment
+import random
 
 class Game(Environment):
 
@@ -23,6 +24,22 @@ class Game(Environment):
             else:
                 raise ValueError(f'Current State: ({X}, {Y}) is invalid!')
     
+    @property
+    def valid_states(self, index=True):
+        coordinate = []
+        for row in range(self._rows):
+            for col in range(self._cols):
+                if self._grid[row][col] == 'o':
+                    coordinate.append((row, col))
+        
+        if index:
+            return [self.to_index(c) for c in coordinate]
+        else:
+            return coordinate
+    
+    def random_state(self):
+        return random.choice(self.valid_states)
+    
     def update(self, actions):
 
         for agent, action in actions.items():
@@ -32,7 +49,7 @@ class Game(Environment):
             
             nx_idx = self.next(action, ind, index=True)
             check = [p for a, p in self._agent_location.items() if 'x' != a]
-            
+
             if nx_idx in check:
                 raise ValueError(f'Action: {action}, State: ({X}, {Y}) is invalid for Agent: {agent}')
             
