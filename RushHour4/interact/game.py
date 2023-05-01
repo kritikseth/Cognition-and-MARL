@@ -11,7 +11,7 @@ class Game(Environment):
     def initialize(self):
          self._agent_location = {}
 
-    def setup(self, agents):
+    def setup_agents(self, agents):
 
         self._agent_location.update(agents)
         for agent, idx in self._agent_location.items():
