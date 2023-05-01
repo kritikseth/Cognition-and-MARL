@@ -64,28 +64,37 @@ class cop_class:
         return f"{self.x}, {self.y}"
 
     def relative_position(self, other):
-        x_val = other.x - self.x
-        y_val = other.y - self.y
+        x_val = 0
+        if other.x > self.x:
+            distance1 = other.x-self.x
+            distance2 = self.x+SIZE - other.x
+            if distance2<distance1:
+                x_val = -distance2
+            else:
+                x_val = distance1
+        elif other.x < self.x:
+            distance1 = self.x - other.x
+            distance2 = other.x+SIZE - self.x
+            if distance2<distance1:
+                x_val = distance2
+            else:
+                x_val = -distance1
 
-        if x_val > (SIZE/2):
-            x_val = SIZE - x_val
-        elif x_val < -((SIZE - 1)/2):
-            x_val = SIZE + x_val
-
-        if y_val > (SIZE/2):
-            y_val = SIZE - y_val
-        elif y_val < -((SIZE - 1)/2):
-            y_val = SIZE + y_val
-
-        if x_val > SIGHT:
-            x_val = SIGHT
-        elif x_val < -SIGHT:
-            x_val = -SIGHT
-
-        if y_val > SIGHT:
-            y_val = SIGHT
-        elif y_val < -SIGHT:
-            y_val = -SIGHT
+        y_val = 0
+        if other.y > self.y:
+            distance1 = other.y-self.y
+            distance2 = self.y+SIZE - other.y
+            if distance2<distance1:
+                y_val = -distance2
+            else:
+                y_val = distance1
+        elif other.y < self.y:
+            distance1 = self.y - other.y
+            distance2 = other.y+SIZE - self.y
+            if distance2<distance1:
+                y_val = distance2
+            else:
+                y_val = -distance1
 
         return (x_val, y_val)
 
@@ -144,19 +153,38 @@ class thief_class:
         return f"{self.x}, {self.y}"
 
     def relative_position(self, other):
-        x_val = other.x - self.x
-        y_val = other.y - self.y
+        x_val = 0
+        if other.x > self.x:
+            distance1 = other.x-self.x
+            distance2 = self.x+SIZE - other.x
+            if distance2<distance1:
+                x_val = -distance2
+            else:
+                x_val = distance1
+        elif other.x < self.x:
+            distance1 = self.x - other.x
+            distance2 = other.x+SIZE - self.x
+            if distance2<distance1:
+                x_val = distance2
+            else:
+                x_val = -distance1
 
-        if x_val > (SIZE/2):
-            x_val = SIZE - x_val
-        elif x_val < -((SIZE - 1)/2):
-            x_val = SIZE + x_val
+        y_val = 0
+        if other.y > self.y:
+            distance1 = other.y-self.y
+            distance2 = self.y+SIZE - other.y
+            if distance2<distance1:
+                y_val = -distance2
+            else:
+                y_val = distance1
+        elif other.y < self.y:
+            distance1 = self.y - other.y
+            distance2 = other.y+SIZE - self.y
+            if distance2<distance1:
+                y_val = distance2
+            else:
+                y_val = -distance1
 
-        if y_val > (SIZE/2):
-            y_val = SIZE - y_val
-        elif y_val < -((SIZE - 1)/2):
-            y_val = SIZE + y_val
-            
         return (x_val, y_val)
 
     def action(self):
