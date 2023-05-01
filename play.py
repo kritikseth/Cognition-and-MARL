@@ -4,7 +4,7 @@ from RushHour4.core import Map
 from RushHour4.interact import Game
 
 blockSize = 50
-ROWS, COLS = 15, 20
+ROWS, COLS = 5, 8
 WINDOW_HEIGHT = blockSize * ROWS
 WINDOW_WIDTH = blockSize * COLS
 
@@ -28,14 +28,14 @@ def main():
     objects = (wall, path, path_rect, cop_1, cop_1_rect, cop_2, cop_2_rect, thief, thief_rect)
 
     map = Map(ROWS, COLS)
-    obstruct_ids = [42, 43, 44, 45, 46, 64, 65, 66, 67, 68, 69, 281,
-                    85, 105, 125, 145, 170, 171, 172, 173, 191, 192,
-                    193, 282, 283, 237, 257, 277]
-    for position in obstruct_ids:
-        map.obstruct(position, index=True)
+    # obstruct_ids = [42, 43, 44, 45, 46, 64, 65, 66, 67, 68, 69, 281,
+    #                 85, 105, 125, 145, 170, 171, 172, 173, 191, 192,
+    #                 193, 282, 283, 237, 257, 277]
+    # for position in obstruct_ids:
+    #     map.obstruct(position, index=True)
 
     game = Game(map, blockSize)
-    agents = {'1': 0, '2': 129, '0': 35}
+    agents = {'1': 19, '2': 39, '0': 35}
     game.initialize(agents)
     drawGrid(game.grid, objects)
     pygame.display.update()
@@ -54,7 +54,7 @@ def main():
         
         if agent in ['0', '1', '2'] and action != None:
             
-            X, Y = game.locate_agent(agent)
+            X, Y = game.locate_agent(agent, index=False)
             if action in game.valid_actions(X, Y):
                 game.update({agent: action})
                 agent, action = None, None

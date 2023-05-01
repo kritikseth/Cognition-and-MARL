@@ -32,6 +32,7 @@ class Game(Environment):
             
             nx_idx = self.next(action, ind, index=True)
             check = [p for a, p in self._agent_location.items() if 'x' != a]
+            
             if nx_idx in check:
                 raise ValueError(f'Action: {action}, State: ({X}, {Y}) is invalid for Agent: {agent}')
             
