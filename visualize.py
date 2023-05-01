@@ -23,11 +23,17 @@ EPS_DECAY = 0.999996
 LEARNING_RATE = 0.1
 DISCOUNT = 0.95
 
-SHOW = False
+SHOW = True
 SHOW_EVERY = 100
 
 if SHOW:
     blockSize = 50
+    global screen, CLOCK
+    agent, action = None, None
+    pygame.init()
+    screen = pygame.display.set_mode((blockSize * COLS, blockSize * ROWS))
+    clock = pygame.time.Clock()
+    screen.fill((0, 0, 0))
     pyimage_objects = load_image_objects()
 
 mymap = Map(ROWS, COLS)
@@ -177,14 +183,8 @@ for episode in progress:
             reward = -MOVE_PENALTY
         
         if SHOW:
-            global screen, CLOCK
-            agent, action = None, None
-            pygame.init()
-            screen = pygame.display.set_mode((blockSize * COLS, blockSize * ROWS))
-            clock = pygame.time.Clock()
-            screen.fill((0, 0, 0))
-            
             visualize(screen, game.grid, pyimage_objects, ROWS, COLS, blockSize)
+            pygame.display.update()
             time.sleep(1)
 
         cop1_pos = game.locate_agent('1')
