@@ -16,7 +16,7 @@ ROWS, COLS = 8, 8
 EPISODES = 1_00_000
 MOVE_PENALTY = 1
 COLLISION_PENALTY = 100
-CATCH_REWARD = 200
+CATCH_REWARD = 400
 STEPS = 400
 
 EPSILON = 1.0
@@ -174,7 +174,7 @@ moving_avg = np.convolve(episode_rewards, np.ones((SHOW_EVERY,))/SHOW_EVERY, mod
 plt.plot([i for i in range(len(moving_avg))], moving_avg)
 plt.ylabel(f'Reward {SHOW_EVERY}ma')
 plt.xlabel('episode #')
-plt.savefig('Graphs/two_common_performance.png')
+plt.savefig('Graphs/separate_performance.png')
 plt.show()
 
 with open(f'Models/qtable_1.pickle', 'wb') as f:

@@ -153,7 +153,7 @@ moving_avg = np.convolve(episode_rewards, np.ones((SHOW_EVERY,))/SHOW_EVERY, mod
 plt.plot([i for i in range(len(moving_avg))], moving_avg)
 plt.ylabel(f'Reward {SHOW_EVERY}ma')
 plt.xlabel('episode #')
-plt.savefig('Graphs/two_common_performance.png')
+plt.savefig('Graphs/common_performance.png')
 plt.show()
 
 with open(f'Models/qtable_common.pickle', 'wb') as f:
