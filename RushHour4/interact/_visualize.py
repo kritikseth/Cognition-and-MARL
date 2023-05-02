@@ -12,18 +12,21 @@ def load_image_objects():
     cop_1_rect = cop_1.get_rect()
     cop_2 = pygame.image.load('Images/cop_2.png').convert_alpha()
     cop_2_rect = cop_2.get_rect()
+    cop_3 = pygame.image.load('Images/cop_3.png').convert_alpha()
+    cop_3_rect = cop_2.get_rect()
     thief = pygame.image.load('Images/thief.png').convert_alpha()
     thief_rect = thief.get_rect()
 
     return (wall,
             path, path_rect,
+            thief, thief_rect,
             cop_1, cop_1_rect,
             cop_2, cop_2_rect,
-            thief, thief_rect)
+            cop_3, cop_3_rect)
 
 def visualize(screen, grid, image_objects, rows, cols, blockSize):
-    wall, path, path_rect, cop_1, cop_1_rect, \
-        cop_2, cop_2_rect, thief, thief_rect = image_objects
+    wall, path, path_rect, thief, thief_rect, \
+        cop_1, cop_1_rect, cop_2, cop_2_rect, cop_3, cop_3_rect = image_objects
 
     X, Y = 0, 0
     for row in range(0, blockSize * rows, blockSize):
@@ -38,6 +41,9 @@ def visualize(screen, grid, image_objects, rows, cols, blockSize):
             if grid[X][Y] == '2':
                 cop_2_rect.topleft = (col, row)
                 screen.blit(cop_2, cop_2_rect)
+            if grid[X][Y] == '3':
+                cop_3_rect.topleft = (col, row)
+                screen.blit(cop_3, cop_3_rect)
             if grid[X][Y] == 'x':
                 thief_rect.topleft = (col, row)
                 screen.blit(thief, thief_rect)
