@@ -12,7 +12,7 @@ def load_image_objects():
     cop_1_rect = cop_1.get_rect()
     cop_2 = pygame.image.load('Images/cop_2.png').convert_alpha()
     cop_2_rect = cop_2.get_rect()
-    thief = pygame.image.load('Images/thief2.png').convert_alpha()
+    thief = pygame.image.load('Images/thief.png').convert_alpha()
     thief_rect = thief.get_rect()
 
     return (wall,
