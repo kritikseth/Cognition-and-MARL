@@ -1,4 +1,5 @@
 from ..core.compose import Environment
+import numpy as np
 import random
 
 class Game(Environment):
@@ -93,7 +94,7 @@ class Game(Environment):
             X, Y = self.right(X, Y)
         
         return (X * self._block_size, Y * self._block_size)
-    
+
     def relative_position(self, thief, cop):
         x_val = 0
         if cop[0] > thief[0]:
@@ -166,6 +167,11 @@ class Game(Environment):
                 directions.append('up')
 
         return directions
+
+class TwoAgentGame(Game, Environment):
+
+    def __init__(self, grid):
+        super().__init__(grid)
     
     def thief_run(self):
         cop1_pos = self.locate_agent('1', index=False)
@@ -189,3 +195,41 @@ class Game(Environment):
                 return dir_away_frm_2[0]
         
         return list(possible_escape)[0]
+
+class ThreeAgentGame(Game, Environment):
+
+    def __init__(self, grid):
+        super().__init__(grid)
+    
+    def thief_run(self):
+        cop1_pos = self.locate_agent('1', index=False)
+        cop2_pos = self.locate_agent('2', index=False)
+        cop3_pos = self.locate_agent('3', index=False)
+        thief_pos = self.locate_agent('x', index=False)
+
+        cop_1_rel = self.relative_position(thief_pos, cop1_pos)
+        cop_2_rel = self.relative_position(thief_pos, cop2_pos)
+        cop_3_rel = self.relative_position(thief_pos, cop3_pos)
+
+        dir_away_frm_1 = self.get_away_direction(cop_1_rel)
+        dir_away_frm_2 = self.get_away_direction(cop_2_rel)
+        dir_away_frm_3 = self.get_away_direction(cop_3_rel)
+
+        possible_escape_12 = set(dir_away_frm_1).intersection(set(dir_away_frm_2))
+        possible_escape_all = possible_escape_12.intersection(set(dir_away_frm_3))
+
+        if len(possible_escape_all)==0:
+            dis_frm_1 = abs(cop_1_rel[0])+abs(cop_1_rel[1])
+            dis_frm_2 = abs(cop_2_rel[0])+abs(cop_2_rel[1])
+            dis_frm_3 = abs(cop_3_rel[0])+abs(cop_3_rel[1])
+            
+            # if dis_frm_1<=dis_frm_2:
+            #     return dir_away_frm_1[0]
+            # else:
+            #     return dir_away_frm_2[0]
+
+            dis_frm_all = [dis_frm_1, dis_frm_2, dis_frm_3]
+            closest_cop = np.argmin(dis_frm_all)
+            return dis_frm_all[closest_cop]
+        
+        return list(possible_escape_all)[0]
