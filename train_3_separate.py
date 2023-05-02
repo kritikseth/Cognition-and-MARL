@@ -28,7 +28,7 @@ SHOW = False
 SHOW_EVERY = 100
 
 if SHOW:
-    blockSize = 50
+    blockSize = 100
     global screen, CLOCK
     agent, action = None, None
     pygame.init()
