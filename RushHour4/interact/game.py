@@ -187,8 +187,8 @@ class ThreeAgentGame(Game, Environment):
         possible_escape = set(dir_away_frm_1).intersection(set(dir_away_frm_2))
 
         if len(possible_escape)==0:
-            dis_frm_1 = abs(cop_1_rel[0])+abs(cop_1_rel[1])
-            dis_frm_2 = abs(cop_2_rel[0])+abs(cop_2_rel[1])
+            dis_frm_1 = abs(cop_1_rel[0]) + abs(cop_1_rel[1])
+            dis_frm_2 = abs(cop_2_rel[0]) + abs(cop_2_rel[1])
             if dis_frm_1<=dis_frm_2:
                 return dir_away_frm_1[0]
             else:
@@ -219,9 +219,9 @@ class FourAgentGame(Game, Environment):
         possible_escape_all = possible_escape_12.intersection(set(dir_away_frm_3))
 
         if len(possible_escape_all)==0:
-            dis_frm_1 = abs(cop_1_rel[0])+abs(cop_1_rel[1])
-            dis_frm_2 = abs(cop_2_rel[0])+abs(cop_2_rel[1])
-            dis_frm_3 = abs(cop_3_rel[0])+abs(cop_3_rel[1])
+            dis_frm_1 = abs(cop_1_rel[0]) + abs(cop_1_rel[1])
+            dis_frm_2 = abs(cop_2_rel[0]) + abs(cop_2_rel[1])
+            dis_frm_3 = abs(cop_3_rel[0]) + abs(cop_3_rel[1])
             
             # if dis_frm_1<=dis_frm_2:
             #     return dir_away_frm_1[0]
