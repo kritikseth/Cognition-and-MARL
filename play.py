@@ -45,7 +45,7 @@ def main():
     while True:
         key = pygame.key.get_pressed()
 
-        if key[pygame.K_0]: agent = 'x'
+        # if key[pygame.K_0]: agent = 'x'
         if key[pygame.K_1]: agent = '1'
         if key[pygame.K_2]: agent = '2'
 
@@ -54,11 +54,17 @@ def main():
         if key[pygame.K_LEFT]: action = 'left'
         if key[pygame.K_RIGHT]: action = 'right'
         
-        if agent in ['x', '1', '2'] and action != None:
+        if agent in ['1', '2'] and action != None:
             
             X, Y = game.locate_agent(agent, index=False)
             game.update({agent: action})
             agent, action = None, None
+
+            #Run
+            thief_pos = game.locate_agent('x')
+            thief_run_direction = game.thief_run()
+            if thief_run_direction in game.valid_actions(thief_pos, index=True):
+                game.update({'x': thief_run_direction})
 
             drawGrid(game.grid, objects)
             pygame.display.update()
