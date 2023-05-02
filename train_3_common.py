@@ -169,9 +169,9 @@ print('Average Steps To Catch      :', STEPS - (sum(episode_rewards)/len(episode
 # OUTPUT
 # pygame 2.3.0 (SDL 2.24.2, Python 3.10.11)
 # Hello from the pygame community. https://www.pygame.org/contribute.html
-# Total Steps: 212: 100% 100000/100000 [30:43<00:00, 54.24it/s]
-# Catching Percentage : Cop 1 : 11.752443349486965
-# Catching Percentage : Cop 2 : 33.26474808457644
-# Catching Percentage : Cop 2 : 54.982808565936594
-# Catching Percentage : Total : 73.874
-# Average Steps To Catch      : 233.58306
+# Total Steps: 65: 100% 100000/100000 [29:18<00:00, 56.86it/s]
+# Catching Percentage : Cop 1 : 11.32880412977773
+# Catching Percentage : Cop 2 : 33.07433064969107
+# Catching Percentage : Cop 2 : 55.5968652205312
+# Catching Percentage : Total : 74.774
+# Average Steps To Catch      : 274.76054999999997
