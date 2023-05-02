@@ -16,7 +16,7 @@ ROWS, COLS = 8, 8
 EPISODES = 1_00_000
 MOVE_PENALTY = 1
 COLLISION_PENALTY = 100
-CATCH_REWARD = 200
+CATCH_REWARD = 400
 STEPS = 400
 
 EPSILON = 1.0
@@ -165,3 +165,13 @@ print('Catching Percentage : Cop 2 :', catch_count2 * 100 / catch_count_total)
 print('Catching Percentage : Cop 2 :', catch_count3 * 100 / catch_count_total)
 print('Catching Percentage : Total :', catch_count_total * 100 / EPISODES)
 print('Average Steps To Catch      :', STEPS - (sum(episode_rewards)/len(episode_rewards)))
+
+# OUTPUT
+# pygame 2.3.0 (SDL 2.24.2, Python 3.10.11)
+# Hello from the pygame community. https://www.pygame.org/contribute.html
+# Total Steps: 212: 100% 100000/100000 [30:43<00:00, 54.24it/s]
+# Catching Percentage : Cop 1 : 11.752443349486965
+# Catching Percentage : Cop 2 : 33.26474808457644
+# Catching Percentage : Cop 2 : 54.982808565936594
+# Catching Percentage : Total : 73.874
+# Average Steps To Catch      : 233.58306
