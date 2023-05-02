@@ -171,7 +171,7 @@ class Game(Environment):
 class ThreeAgentGame(Game, Environment):
 
     def __init__(self, grid, block_size):
-        super().__init__(grid)
+        super().__init__(grid, block_size)
     
     def thief_run(self):
         cop1_pos = self.locate_agent('1', index=False)
@@ -199,7 +199,7 @@ class ThreeAgentGame(Game, Environment):
 class FourAgentGame(Game, Environment):
 
     def __init__(self, grid, block_size):
-        super().__init__(grid)
+        super().__init__(grid, block_size)
     
     def thief_run(self):
         cop1_pos = self.locate_agent('1', index=False)
