@@ -168,7 +168,7 @@ class Game(Environment):
 
         return directions
 
-class TwoAgentGame(Game, Environment):
+class ThreeAgentGame(Game, Environment):
 
     def __init__(self, grid):
         super().__init__(grid)
@@ -196,7 +196,7 @@ class TwoAgentGame(Game, Environment):
         
         return list(possible_escape)[0]
 
-class ThreeAgentGame(Game, Environment):
+class FourAgentGame(Game, Environment):
 
     def __init__(self, grid):
         super().__init__(grid)
