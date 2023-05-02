@@ -229,7 +229,8 @@ class FourAgentGame(Game, Environment):
             #     return dir_away_frm_2[0]
 
             dis_frm_all = [dis_frm_1, dis_frm_2, dis_frm_3]
+            dir_away_frm_all = [dir_away_frm_1, dir_away_frm_2, dir_away_frm_3]
             closest_cop = np.argmin(dis_frm_all)
-            return dis_frm_all[closest_cop]
+            return dir_away_frm_all[closest_cop][0]
         
         return list(possible_escape_all)[0]
