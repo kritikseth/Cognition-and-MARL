@@ -1,8 +1,10 @@
 import sys
 import time
 import pygame
+import pickle
 from RushHour4.core import Map
 from RushHour4.interact import FourAgentGame
+from RushHour4.utils import *
 
 blockSize = 100
 ROWS, COLS = 8, 8
@@ -48,12 +50,37 @@ def main():
     pygame.display.update()
     action_done = False
 
+    count_1_match = 0
+    count_2_match = 0
+    count_3_match = 0
+    total_steps = 1
+    separate = True
+    if separate:
+        with open(f'Models/qtable_1.pickle', 'rb') as f:
+            q_table1 = pickle.load(f)
+        with open(f'Models/qtable_2.pickle', 'rb') as f:
+            q_table2 = pickle.load(f)
+        with open(f'Models/qtable_3.pickle', 'rb') as f:
+            q_table3 = pickle.load(f)
+    else:
+        with open(f'Models/qtable_common.pickle', 'rb') as f:
+            q_table1 = pickle.load(f)
+            q_table2 = q_table1
+            q_table3 = q_table1
+
     while True:
         next = True
         objects_alter = objects_original
         for agent in ['1', '2', '3']:
 
             next, action_done = True, False
+
+            cop1_pos = game.locate_agent('1')
+            cop2_pos = game.locate_agent('2')
+            cop3_pos = game.locate_agent('3')
+            thief_pos = game.locate_agent('x')
+            cop1_state, cop2_state, cop3_state = get_cop_states(cop1_pos, cop2_pos, cop3_pos, thief_pos)
+
             while next:
                 if not action_done:
                     
@@ -67,14 +94,23 @@ def main():
                         game.update({agent: action})
 
                         if agent == '1':
+                            model1_prediction = perform_action(cop1_state, q_table1, 0.0)
+                            if action == model1_prediction:
+                                count_1_match += 1
                             drawGrid(game.grid, objects_original, '2')
                             pygame.display.update()
 
                         elif agent == '2':
+                            model2_prediction = perform_action(cop2_state, q_table2, 0.0)
+                            if action == model2_prediction:
+                                count_2_match += 1
                             drawGrid(game.grid, objects_original, '3')
                             pygame.display.update()
 
                         elif agent == '3':
+                            model3_prediction = perform_action(cop3_state, q_table3, 0.0)
+                            if action == model3_prediction:
+                                count_3_match += 1
                             drawGrid(game.grid, objects_original, '1')
                             pygame.display.update()
                         
@@ -90,6 +126,7 @@ def main():
         time.sleep(1)
         thief_pos = game.locate_agent('x')
         thief_run_direction = game.thief_run()
+        total_steps += 1
 
         if thief_run_direction in game.valid_actions(thief_pos, index=True):
             game.update({'x': thief_run_direction})
@@ -101,8 +138,15 @@ def main():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                total_matches = count_1_match + count_2_match + count_3_match
+                print('Percentage Actions Matched : Cop 1 :', count_1_match / total_steps)
+                print('Percentage Actions Matched : Cop 2 :', count_2_match / total_steps)
+                print('Percentage Actions Matched : Cop 2 :', count_3_match / total_steps)
+                print('Percentage Actions Matched         :', total_matches / (total_steps*3))
+                print('Total Number Of Steps To Catch     :', total_steps)
                 pygame.quit()
                 sys.exit()
+    
  
 
 def drawGrid(grid, objects, agent='1'):
