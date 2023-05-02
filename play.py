@@ -2,9 +2,9 @@ import sys
 import time
 import pygame
 from RushHour4.core import Map
-from RushHour4.interact import Game
+from RushHour4.interact import FourAgentGame
 
-blockSize = 50
+blockSize = 100
 ROWS, COLS = 8, 8
 WINDOW_HEIGHT = blockSize * ROWS
 WINDOW_WIDTH = blockSize * COLS
@@ -22,85 +22,81 @@ def main():
     wall = pygame.image.load('Images/wall.png').convert_alpha()
     cop_1 = pygame.image.load('Images/cop_1.png').convert_alpha()
     cop_1_rect = cop_1.get_rect()
+    cop_1_s = pygame.image.load('Images/cop_1_s.png').convert_alpha()
+    cop_1_s_rect = cop_1_s.get_rect()
     cop_2 = pygame.image.load('Images/cop_2.png').convert_alpha()
     cop_2_rect = cop_2.get_rect()
+    cop_2_s = pygame.image.load('Images/cop_2_s.png').convert_alpha()
+    cop_2_s_rect = cop_2_s.get_rect()
+    cop_3 = pygame.image.load('Images/cop_3.png').convert_alpha()
+    cop_3_rect = cop_2.get_rect()
+    cop_3_s = pygame.image.load('Images/cop_3_s.png').convert_alpha()
+    cop_3_s_rect = cop_3_s.get_rect()
     thief = pygame.image.load('Images/thief.png').convert_alpha()
     thief_rect = thief.get_rect()
-    objects = (wall, path, path_rect, cop_1, cop_1_rect, cop_2, cop_2_rect, thief, thief_rect)
+    objects_original = [wall, path, path_rect, thief, thief_rect, cop_1, cop_1_rect, cop_2, cop_2_rect, cop_3, cop_3_rect]
 
     mymap = Map(ROWS, COLS)
-    # obstruct_ids = [42, 43, 44, 45, 46, 64, 65, 66, 67, 68, 69, 281,
-    #                 85, 105, 125, 145, 170, 171, 172, 173, 191, 192,
-    #                 193, 282, 283, 237, 257, 277]
-    # for position in obstruct_ids:
-    #     mymap.obstruct(position, index=True)
-
-    game = Game(mymap, blockSize)
+    game = FourAgentGame(mymap, blockSize)
     game.initialize()
     game.setup_agents({'1': game.random_state()})
     game.setup_agents({'2': game.random_state()})
+    game.setup_agents({'3': game.random_state()})
     game.setup_agents({'x': game.random_state()})
-    drawGrid(game.grid, objects)
+    drawGrid(game.grid, objects_original)
     pygame.display.update()
-    cop_1_update, cop_2_update = {}, {}
-    cop_1_updated, cop_2_updated = False, False
-    cop_1_action, cop_2_action = None, None
+    action_done = False
 
     while True:
-        key = pygame.key.get_pressed()
+        next = True
+        objects_alter = objects_original
+        for agent in ['1', '2', '3']:
 
-        # if key[pygame.K_0]: agent = 'x'
-        if key[pygame.K_UP]: cop_1_action = 'up'
-        if key[pygame.K_DOWN]: cop_1_action = 'down'
-        if key[pygame.K_LEFT]: cop_1_action = 'left'
-        if key[pygame.K_RIGHT]: cop_1_action = 'right'
+            next, action_done = True, False
+            while next:
+                if not action_done:
+                    
+                    key = pygame.key.get_pressed()
+                    if key[pygame.K_UP]: action = 'up'
+                    elif key[pygame.K_DOWN]: action = 'down'
+                    elif key[pygame.K_LEFT]: action = 'left'
+                    elif key[pygame.K_RIGHT]: action = 'right'
 
-        if key[pygame.K_w]: cop_2_action = 'up'
-        if key[pygame.K_s]: cop_2_action = 'down'
-        if key[pygame.K_a]: cop_2_action = 'left'
-        if key[pygame.K_d]: cop_2_action = 'right'
-        
-        if cop_1_action != None:
-            cop_1_update = {'1': cop_1_action}
-        
-        if cop_2_action != None:
-            cop_2_update = {'2': cop_2_action}
+                    if action in ['up', 'down', 'left', 'right']:
+                        game.update({agent: action})
 
-        if '1' in cop_1_update.keys() and not cop_1_updated:
-            game.update(cop_1_update)
-            drawGrid(game.grid, objects)
+                        drawGrid(game.grid, objects_original)
+                        pygame.display.update()
+                        action_done, action = True, None
+
+                if action_done and action == None:
+                    key = pygame.key.get_pressed()
+                    if key[pygame.K_SPACE]:
+                        next = False
+                        drawGrid(game.grid, objects_original)
+                        pygame.display.update()
+
+                pygame.event.pump()
+        time.sleep(1)
+        thief_pos = game.locate_agent('x')
+        thief_run_direction = game.thief_run()
+
+        if thief_run_direction in game.valid_actions(thief_pos, index=True):
+            game.update({'x': thief_run_direction})
+
+            drawGrid(game.grid, objects_original)
             pygame.display.update()
-            cop_1_action, cop_1_update = None, {}
-            cop_1_updated = True
-        
-        if '2' in cop_2_update.keys() and cop_1_updated and not cop_2_updated:
-            game.update(cop_2_update)
-            drawGrid(game.grid, objects)
-            pygame.display.update()
-            cop_2_action, cop_2_update = None, {}
-            cop_2_updated = True
-        
-        if cop_1_updated and cop_2_updated:
-            time.sleep(1)
-            thief_pos = game.locate_agent('x')
-            thief_run_direction = game.thief_run()
-            if thief_run_direction in game.valid_actions(thief_pos, index=True):
-                game.update({'x': thief_run_direction})
-            
-            drawGrid(game.grid, objects)
-            pygame.display.update()
-            cop_1_update, cop_2_update = {}, {}
-            cop_1_updated, cop_2_updated = False, False
-            cop_1_action, cop_2_action = None, None
-        
+
+        pygame.event.pump()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
  
 
-def drawGrid(grid, objects):
-    wall, path, path_rect, cop_1, cop_1_rect, cop_2, cop_2_rect, thief, thief_rect = objects
+def drawGrid(grid, objects, agent):
+    wall, path, path_rect, thief, thief_rect, cop_1, cop_1_rect, cop_2, cop_2_rect, cop_3, cop_3_rect = objects
     X, Y = 0, 0
     for row in range(0, WINDOW_HEIGHT, blockSize):
         Y = 0
@@ -114,12 +110,16 @@ def drawGrid(grid, objects):
             if grid[X][Y] == '2':
                 cop_2_rect.topleft = (col, row)
                 screen.blit(cop_2, cop_2_rect)
+            if grid[X][Y] == '3':
+                cop_3_rect.topleft = (col, row)
+                screen.blit(cop_3, cop_3_rect)
             if grid[X][Y] == 'x':
                 thief_rect.topleft = (col, row)
                 screen.blit(thief, thief_rect)
             if grid[X][Y] == 'o':
                 path_rect.topleft = (col, row)
                 screen.blit(path, path_rect)
+
             Y += 1
         X += 1
 
