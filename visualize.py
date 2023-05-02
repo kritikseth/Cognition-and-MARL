@@ -82,64 +82,6 @@ def update_table(reward, old_state, new_state, direction):
         new_q = (1 - LEARNING_RATE) * current_q + LEARNING_RATE * (reward + DISCOUNT * max_future_q)
     q_table[old_state[0]][old_state[1]][old_state[2]][direction] = new_q
 
-def relative_position(thief, cop):
-    x_val = 0
-    if cop[0] > thief[0]:
-        distance1 = cop[0]-thief[0]
-        distance2 = thief[0]+ROWS - cop[0]
-        if distance2<distance1:
-            x_val = -distance2
-        else:
-            x_val = distance1
-    elif cop[0] < thief[0]:
-        distance1 = thief[0] - cop[0]
-        distance2 = cop[0]+ROWS - thief[0]
-        if distance2<distance1:
-            x_val = distance2
-        else:
-            x_val = -distance1
-    
-    y_val = 0
-    if cop[1] > thief[1]:
-        distance1 = cop[1]-thief[1]
-        distance2 = thief[1]+ROWS - cop[1]
-        if distance2<distance1:
-            y_val = -distance2
-        else:
-            y_val = distance1
-    elif cop[1] < thief[1]:
-        distance1 = thief[1] - cop[1]
-        distance2 = cop[1]+ROWS - thief[1]
-        if distance2<distance1:
-            y_val = distance2
-        else:
-            y_val = -distance1
-
-    return (x_val, y_val)
-
-def thief_run():
-    cop1_pos = game.locate_agent('1', index=False)
-    cop2_pos = game.locate_agent('2', index=False)
-    thief_pos = game.locate_agent('x', index=False)
-
-    cop_1_rel = relative_position(thief_pos, cop1_pos)
-    cop_2_rel = relative_position(thief_pos, cop2_pos)
-
-    obs = [cop_1_rel[0], cop_1_rel[1], cop_2_rel[0], cop_2_rel[1]]
-    obs_values = list(map(abs, obs))
-    
-    lowest_index = obs_values.index(min(obs_values))
-    if obs[lowest_index] < 0:
-        if lowest_index in [0,2]:
-            direction = 'right'
-        else:
-            direction = 'down'
-    else:
-        if lowest_index in [0,2]:
-            direction = 'left'
-        else:
-            direction = 'up'
-    return direction
 
 episode_rewards = []
 catch_count1 = 0
@@ -185,13 +127,13 @@ for episode in progress:
         if SHOW:
             visualize(screen, game.grid, pyimage_objects, ROWS, COLS, blockSize)
             pygame.display.update()
-            time.sleep(1)
+            time.sleep(0.1)
 
         cop1_pos = game.locate_agent('1')
         cop2_pos = game.locate_agent('2')
         
         if reward != CATCH_REWARD:
-            thief_run_direction = thief_run()
+            thief_run_direction = game.thief_run()
             if thief_run_direction in game.valid_actions(thief_pos, index=True):
                 game.update({'x': thief_run_direction})
 

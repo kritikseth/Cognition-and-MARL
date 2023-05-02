@@ -132,34 +132,34 @@ class Game(Environment):
     def get_away_direction(self, distance):
         directions = []
         if abs(distance[0]) < abs(distance[1]):
-            if distance[0]<0:
+            if distance[0] < 0:
                 directions.append('down')
-            if distance[0]>0:
+            elif distance[0] > 0:
                 directions.append('up')
             else:
                 directions.append('down')
                 directions.append('up')
 
-            if distance[1]<0:
+            if distance[1] < 0:
                 directions.append('right')
-            if distance[1]>0:
+            elif distance[1] > 0:
                 directions.append('left')
             else:
                 directions.append('right')
                 directions.append('left')
         
         else:
-            if distance[1]<0:
+            if distance[1] < 0:
                 directions.append('right')
-            if distance[1]>0:
+            elif distance[1] > 0:
                 directions.append('left')
             else:
                 directions.append('right')
                 directions.append('left')
 
-            if distance[0]<0:
+            if distance[0] < 0:
                 directions.append('down')
-            if distance[0]>0:
+            elif distance[0] > 0:
                 directions.append('up')
             else:
                 directions.append('down')
