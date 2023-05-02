@@ -170,7 +170,7 @@ class Game(Environment):
 
 class ThreeAgentGame(Game, Environment):
 
-    def __init__(self, grid):
+    def __init__(self, grid, block_size):
         super().__init__(grid)
     
     def thief_run(self):
@@ -198,7 +198,7 @@ class ThreeAgentGame(Game, Environment):
 
 class FourAgentGame(Game, Environment):
 
-    def __init__(self, grid):
+    def __init__(self, grid, block_size):
         super().__init__(grid)
     
     def thief_run(self):
