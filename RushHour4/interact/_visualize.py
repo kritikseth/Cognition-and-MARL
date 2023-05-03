@@ -5,16 +5,16 @@ from RushHour4.interact import Game
     
     
 def load_image_objects():
-    path = pygame.image.load('Images/path.png').convert_alpha()
+    path = pygame.image.load('Images/path_border.png').convert_alpha()
     path_rect = path.get_rect()
     wall = pygame.image.load('Images/wall.png').convert_alpha()
-    cop_1 = pygame.image.load('Images/cop_1.png').convert_alpha()
+    cop_1 = pygame.image.load('Images/cop_1_border.png').convert_alpha()
     cop_1_rect = cop_1.get_rect()
-    cop_2 = pygame.image.load('Images/cop_2.png').convert_alpha()
+    cop_2 = pygame.image.load('Images/cop_2_border.png').convert_alpha()
     cop_2_rect = cop_2.get_rect()
-    cop_3 = pygame.image.load('Images/cop_3.png').convert_alpha()
+    cop_3 = pygame.image.load('Images/cop_3_border.png').convert_alpha()
     cop_3_rect = cop_2.get_rect()
-    thief = pygame.image.load('Images/thief.png').convert_alpha()
+    thief = pygame.image.load('Images/thief_border.png').convert_alpha()
     thief_rect = thief.get_rect()
 
     return (wall,

@@ -1,3 +1,4 @@
+import sys
 import random
 import time
 from tqdm import trange
@@ -14,22 +15,22 @@ from RushHour4.utils import *
 import pickle
 
 ROWS, COLS = 8, 8
-EPISODES = 20
+EPISODES = 10
 MOVE_PENALTY = 1
 COLLISION_PENALTY = 100
 CATCH_REWARD = 400
 STEPS = 400
 
-EPSILON = 1.0
-EPS_DECAY = 0.99996
+EPSILON = 0.0
+EPS_DECAY = 0.9999965
 LEARNING_RATE = 0.1
 DISCOUNT = 0.95
 
 SHOW = True
-SHOW_EVERY = 100
+SHOW_EVERY = 1
 
+blockSize = 100
 if SHOW:
-    blockSize = 100
     global screen, CLOCK
     agent, action = None, None
     pygame.init()
@@ -39,31 +40,29 @@ if SHOW:
     pyimage_objects = load_image_objects()
 
 mymap = Map(ROWS, COLS)
-game = FourAgentGame(mymap, 50)
+game = FourAgentGame(mymap, blockSize)
 
-start_q_table = '/Users/kritikseth/Documents/GitHub/Cognition-and-MARL/Models/qtable_common.pickle' # None or Filename
-# start_q_table = 'Models/qtable_common.pickle' # None or Filename
+model_type = sys.argv[1]
 
-if start_q_table is None:
-    # initialize the q-table
-    q_table = np.zeros((ROWS*COLS, ROWS*COLS, ROWS*COLS, ROWS*COLS, 4))
-    for primary_cop_pos in range(game._start, game._end + 1):
-        for secondary_cop_pos in range(game._start, game._end + 1):
-            for tertiary_cop_pos in range(game._start, game._end + 1):
-                for thief_pos in range(game._start, game._end + 1):
-                        q_table[primary_cop_pos, secondary_cop_pos, tertiary_cop_pos, thief_pos, :] = [np.random.uniform(-1, 1) for i in range(4)]
-    
-    with open(f'Models/qtable_common_init.pickle', 'wb') as f:
-        pickle.dump(q_table, f)
-    
-    # with open(f'Models/qtable_common_init.pickle', 'rb') as f:
-    #     q_table = pickle.load(f)
-
-else:
-    with open(start_q_table, 'rb') as f:
-        q_table = pickle.load(f)
+if model_type == 'common':
+    start_q_table1 = 'Models/qtable_common.pickle' # None or Filename
+    with open(start_q_table1, 'rb') as f:
+        q_table1 = pickle.load(f)
+        q_table2 = q_table1
+        q_table3 = q_table1
+elif model_type == 'separate':
+    start_q_table1 = 'Models/qtable_1.pickle' # None or Filename
+    start_q_table2 = 'Models/qtable_2.pickle' # None or Filename
+    start_q_table3 = 'Models/qtable_3.pickle' # None or Filename
+    with open(start_q_table1, 'rb') as f:
+        q_table1 = pickle.load(f)
+    with open(start_q_table2, 'rb') as f:
+        q_table2 = pickle.load(f)
+    with open(start_q_table3, 'rb') as f:
+        q_table3 = pickle.load(f)
          
 action_direction = ['up', 'down', 'left', 'right']
+
 
 episode_rewards = []
 catch_count1 = 0
@@ -91,9 +90,9 @@ for episode in progress:
     cop1_state, cop2_state, cop3_state = get_cop_states(cop1_pos, cop2_pos, cop3_pos, thief_pos)
 
     for i in range(STEPS):
-        cop1_direction = perform_action(cop1_state, q_table, EPSILON)
-        cop2_direction = perform_action(cop2_state, q_table, EPSILON)
-        cop3_direction = perform_action(cop3_state, q_table, EPSILON)
+        cop1_direction = perform_action(cop1_state, q_table1, EPSILON)
+        cop2_direction = perform_action(cop2_state, q_table2, EPSILON)
+        cop3_direction = perform_action(cop3_state, q_table3, EPSILON)
         if action_direction[cop1_direction] in game.valid_actions(cop1_pos, index=True):
             game.update({'1': action_direction[cop1_direction]})
         
@@ -121,7 +120,9 @@ for episode in progress:
         if SHOW:
             visualize(screen, game.grid, pyimage_objects, ROWS, COLS, blockSize)
             pygame.display.update()
-            time.sleep(0.1)
+            time.sleep(1)
+            if game._agent_location['x'] == 'end':
+                time.sleep(2)
 
         cop1_pos = game.locate_agent('1')
         cop2_pos = game.locate_agent('2')
@@ -135,15 +136,10 @@ for episode in progress:
         thief_pos = game.locate_agent('x')
         cop1_state_new, cop2_state_new, cop3_state_new = get_cop_states(cop1_pos, cop2_pos, cop3_pos, thief_pos)
 
-        update_table(reward, cop1_state, cop1_state_new, cop1_direction, q_table, CATCH_REWARD, LEARNING_RATE, DISCOUNT)
-        update_table(reward, cop2_state, cop2_state_new, cop2_direction, q_table, CATCH_REWARD, LEARNING_RATE, DISCOUNT)
-        update_table(reward, cop3_state, cop3_state_new, cop3_direction, q_table, CATCH_REWARD, LEARNING_RATE, DISCOUNT)
-
         cop1_state, cop2_state, cop3_state = cop1_state_new, cop2_state_new, cop3_state_new
 
         episode_reward += reward
         if reward == CATCH_REWARD:
-            time.sleep(5)
             break
     
     progress.set_description(f'Total Steps: {STEPS - episode_reward}')
@@ -155,11 +151,8 @@ moving_avg = np.convolve(episode_rewards, np.ones((SHOW_EVERY,))/SHOW_EVERY, mod
 plt.plot([i for i in range(len(moving_avg))], moving_avg)
 plt.ylabel(f'Reward {SHOW_EVERY}ma')
 plt.xlabel('episode #')
-plt.savefig('Graphs/common_performance.png')
+plt.savefig('Graphs/visualize.png')
 plt.show()
-
-with open(f'Models/qtable_common.pickle', 'wb') as f:
-    pickle.dump(q_table, f)
 
 catch_count_total = (catch_count1 + catch_count2 + catch_count3)
 print('Catching Percentage : Cop 1 :', catch_count1 * 100 / catch_count_total)
@@ -167,13 +160,3 @@ print('Catching Percentage : Cop 2 :', catch_count2 * 100 / catch_count_total)
 print('Catching Percentage : Cop 2 :', catch_count3 * 100 / catch_count_total)
 print('Catching Percentage : Total :', catch_count_total * 100 / EPISODES)
 print('Average Steps To Catch      :', STEPS - (sum(episode_rewards)/len(episode_rewards)))
-
-# OUTPUT
-# pygame 2.3.0 (SDL 2.24.2, Python 3.10.11)
-# Hello from the pygame community. https://www.pygame.org/contribute.html
-# Total Steps: 212: 100% 100000/100000 [30:43<00:00, 54.24it/s]
-# Catching Percentage : Cop 1 : 11.752443349486965
-# Catching Percentage : Cop 2 : 33.26474808457644
-# Catching Percentage : Cop 2 : 54.982808565936594
-# Catching Percentage : Total : 73.874
-# Average Steps To Catch      : 233.58306
