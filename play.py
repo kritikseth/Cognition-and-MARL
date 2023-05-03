@@ -94,19 +94,16 @@ def main(model_type='common'):
 
                         if agent == '1':
                             model1_prediction = perform_action(cop1_state, q_table1, 0.0)
-                            print(agent, action_direction[model1_prediction])
                             if action == action_direction[model1_prediction]:
                                 count_1_match += 1
 
                         elif agent == '2':
                             model2_prediction = perform_action(cop2_state, q_table2, 0.0)
-                            print(agent, action_direction[model2_prediction])
                             if action == action_direction[model2_prediction]:
                                 count_2_match += 1
 
                         elif agent == '3':
                             model3_prediction = perform_action(cop3_state, q_table3, 0.0)
-                            print(agent, action_direction[model3_prediction])
                             if action == action_direction[model3_prediction]:
                                 count_3_match += 1
                         
