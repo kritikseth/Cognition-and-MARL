@@ -20,22 +20,16 @@ def main():
     clock = pygame.time.Clock()
     screen.fill((0, 0, 0))
 
-    path = pygame.image.load('Images/path.png').convert_alpha()
+    path = pygame.image.load('Images/1_path.png').convert_alpha()
     path_rect = path.get_rect()
     wall = pygame.image.load('Images/wall.png').convert_alpha()
-    cop_1 = pygame.image.load('Images/cop_1.png').convert_alpha()
+    cop_1 = pygame.image.load('Images/1_cop_1.png').convert_alpha()
     cop_1_rect = cop_1.get_rect()
-    cop_1_s = pygame.image.load('Images/cop_1_s.png').convert_alpha()
-    cop_1_s_rect = cop_1_s.get_rect()
-    cop_2 = pygame.image.load('Images/cop_2.png').convert_alpha()
+    cop_2 = pygame.image.load('Images/1_cop_2.png').convert_alpha()
     cop_2_rect = cop_2.get_rect()
-    cop_2_s = pygame.image.load('Images/cop_2_s.png').convert_alpha()
-    cop_2_s_rect = cop_2_s.get_rect()
-    cop_3 = pygame.image.load('Images/cop_3.png').convert_alpha()
+    cop_3 = pygame.image.load('Images/1_cop_3.png').convert_alpha()
     cop_3_rect = cop_2.get_rect()
-    cop_3_s = pygame.image.load('Images/cop_3_s.png').convert_alpha()
-    cop_3_s_rect = cop_3_s.get_rect()
-    thief = pygame.image.load('Images/thief.png').convert_alpha()
+    thief = pygame.image.load('Images/1_thief.png').convert_alpha()
     thief_rect = thief.get_rect()
     objects_original = [wall, path, path_rect, thief, thief_rect, cop_1, cop_1_rect, cop_2, cop_2_rect, cop_3, cop_3_rect]
 
@@ -70,7 +64,8 @@ def main():
 
     while True:
         next = True
-        objects_alter = objects_original
+        drawGrid(game.grid, objects_original, '1')
+        pygame.display.update()
         for agent in ['1', '2', '3']:
 
             next, action_done = True, False
@@ -97,41 +92,59 @@ def main():
                             model1_prediction = perform_action(cop1_state, q_table1, 0.0)
                             if action == model1_prediction:
                                 count_1_match += 1
-                            drawGrid(game.grid, objects_original, '2')
-                            pygame.display.update()
 
                         elif agent == '2':
                             model2_prediction = perform_action(cop2_state, q_table2, 0.0)
                             if action == model2_prediction:
                                 count_2_match += 1
-                            drawGrid(game.grid, objects_original, '3')
-                            pygame.display.update()
 
                         elif agent == '3':
                             model3_prediction = perform_action(cop3_state, q_table3, 0.0)
                             if action == model3_prediction:
                                 count_3_match += 1
-                            drawGrid(game.grid, objects_original, '1')
-                            pygame.display.update()
+                        
+                        drawGrid(game.grid, objects_original)
+                        pygame.display.update()
                         
                         action_done, action = True, None
 
                 if action_done and action == None:
                     key = pygame.key.get_pressed()
                     if key[pygame.K_SPACE]:
+                        if agent == '1':
+                            drawGrid(game.grid, objects_original, '2')
+                            pygame.display.update()
+
+                        elif agent == '2':
+                            drawGrid(game.grid, objects_original, '3')
+                            pygame.display.update()
+
+                        elif agent == '3':
+                            drawGrid(game.grid, objects_original, '1')
+                            pygame.display.update()
                         next = False
 
                 pygame.event.pump()
                 
         time.sleep(1)
         thief_pos = game.locate_agent('x')
-        thief_run_direction = game.thief_run()
-        total_steps += 1
+        if game._agent_location['x'] == 'end':
+            total_matches = count_1_match + count_2_match + count_3_match
+            print('Percentage Actions Matched : Cop 1 :', count_1_match / total_steps)
+            print('Percentage Actions Matched : Cop 2 :', count_2_match / total_steps)
+            print('Percentage Actions Matched : Cop 2 :', count_3_match / total_steps)
+            print('Percentage Actions Matched         :', total_matches / (total_steps*3))
+            print('Total Number Of Steps To Catch     :', total_steps)
+            pygame.quit()
+            sys.exit()
+        else:
+            thief_run_direction = game.thief_run()
+            total_steps += 1
 
         if thief_run_direction in game.valid_actions(thief_pos, index=True):
             game.update({'x': thief_run_direction})
 
-            drawGrid(game.grid, objects_original, '1')
+            drawGrid(game.grid, objects_original)
             pygame.display.update()
 
         pygame.event.pump()
@@ -146,16 +159,28 @@ def main():
                 print('Total Number Of Steps To Catch     :', total_steps)
                 pygame.quit()
                 sys.exit()
-    
- 
 
-def drawGrid(grid, objects, agent='1'):
+def drawGrid(grid, objects, agent=None):
     wall, path, path_rect, thief, thief_rect, cop_1, cop_1_rect, cop_2, cop_2_rect, cop_3, cop_3_rect = objects
     X, Y = 0, 0
     for row in range(0, WINDOW_HEIGHT, blockSize):
         Y = 0
         for col in range(0, WINDOW_WIDTH, blockSize):
             rect = pygame.Rect(col, row, blockSize, blockSize)
+
+            if agent == None:
+                if grid[X][Y] == '1':
+                    pygame.draw.rect(screen, BLACK, pygame.Rect(col, row, blockSize, blockSize))
+                    cop_1_rect.topleft = (col, row)
+                    screen.blit(cop_1, cop_1_rect)
+                if grid[X][Y] == '2':
+                    pygame.draw.rect(screen, BLACK, pygame.Rect(col, row, blockSize, blockSize))
+                    cop_2_rect.topleft = (col, row)
+                    screen.blit(cop_2, cop_2_rect)
+                if grid[X][Y] == '3':
+                    pygame.draw.rect(screen, BLACK, pygame.Rect(col, row, blockSize, blockSize))
+                    cop_3_rect.topleft = (col, row)
+                    screen.blit(cop_3, cop_3_rect)
 
             if agent == '1':
                 if grid[X][Y] == '1':
@@ -173,29 +198,29 @@ def drawGrid(grid, objects, agent='1'):
             
             elif agent == '2':
                 if grid[X][Y] == '1':
-                    pygame.draw.rect(screen, BLACK, pygame.Rect(col, row, blockSize, blockSize), 3)
+                    pygame.draw.rect(screen, BLACK, pygame.Rect(col, row, blockSize, blockSize))
                     cop_1_rect.topleft = (col, row)
                     screen.blit(cop_1, cop_1_rect)
                 if grid[X][Y] == '2':
-                    pygame.draw.rect(screen, RED, pygame.Rect(col, row, blockSize, blockSize), 3)
+                    pygame.draw.rect(screen, RED, pygame.Rect(col, row, blockSize, blockSize))
                     cop_2_rect.topleft = (col, row)
                     screen.blit(cop_2, cop_2_rect)
                 if grid[X][Y] == '3':
-                    pygame.draw.rect(screen, BLACK, pygame.Rect(col, row, blockSize, blockSize), 3)
+                    pygame.draw.rect(screen, BLACK, pygame.Rect(col, row, blockSize, blockSize))
                     cop_3_rect.topleft = (col, row)
                     screen.blit(cop_3, cop_3_rect)
             
             elif agent == '3':
                 if grid[X][Y] == '1':
-                    pygame.draw.rect(screen, BLACK, pygame.Rect(col, row, blockSize, blockSize), 3)
+                    pygame.draw.rect(screen, BLACK, pygame.Rect(col, row, blockSize, blockSize))
                     cop_1_rect.topleft = (col, row)
                     screen.blit(cop_1, cop_1_rect)
                 if grid[X][Y] == '2':
-                    pygame.draw.rect(screen, BLACK, pygame.Rect(col, row, blockSize, blockSize), 3)
+                    pygame.draw.rect(screen, BLACK, pygame.Rect(col, row, blockSize, blockSize))
                     cop_2_rect.topleft = (col, row)
                     screen.blit(cop_2, cop_2_rect)
                 if grid[X][Y] == '3':
-                    pygame.draw.rect(screen, RED, pygame.Rect(col, row, blockSize, blockSize), 3)
+                    pygame.draw.rect(screen, RED, pygame.Rect(col, row, blockSize, blockSize))
                     cop_3_rect.topleft = (col, row)
                     screen.blit(cop_3, cop_3_rect)
                

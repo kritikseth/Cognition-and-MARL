@@ -13,7 +13,7 @@ from RushHour4.utils import *
 import pickle
 
 ROWS, COLS = 8, 8
-EPISODES = 1_00_000
+EPISODES = 10_00_000
 MOVE_PENALTY = 1
 COLLISION_PENALTY = 100
 CATCH_REWARD = 400
@@ -48,31 +48,31 @@ start_q_table3 = None # None or Filename
 # start_q_table3 = 'Models/qtable_3.pickle' # None or Filename
 
 if start_q_table1 is None:
-    # # initialize the q-table#
-    # q_table1 = np.zeros((ROWS*COLS, ROWS*COLS, ROWS*COLS, ROWS*COLS, 4))
-    # q_table2 = np.zeros((ROWS*COLS, ROWS*COLS, ROWS*COLS, ROWS*COLS, 4))
-    # q_table3 = np.zeros((ROWS*COLS, ROWS*COLS, ROWS*COLS, ROWS*COLS, 4))
-    # for primary_cop_pos in range(game._start, game._end + 1):
-    #     for secondary_cop_pos in range(game._start, game._end + 1):
-    #         for tertiary_cop_pos in range(game._start, game._end + 1):
-    #             for thief_pos in range(game._start, game._end + 1):
-    #                     q_table1[primary_cop_pos, secondary_cop_pos, tertiary_cop_pos, thief_pos, :] = [np.random.uniform(-1, 1) for i in range(4)]
-    #                     q_table2[primary_cop_pos, secondary_cop_pos, tertiary_cop_pos, thief_pos, :] = [np.random.uniform(-1, 1) for i in range(4)]
-    #                     q_table3[primary_cop_pos, secondary_cop_pos, tertiary_cop_pos, thief_pos, :] = [np.random.uniform(-1, 1) for i in range(4)]
+    # initialize the q-table#
+    q_table1 = np.zeros((ROWS*COLS, ROWS*COLS, ROWS*COLS, ROWS*COLS, 4))
+    q_table2 = np.zeros((ROWS*COLS, ROWS*COLS, ROWS*COLS, ROWS*COLS, 4))
+    q_table3 = np.zeros((ROWS*COLS, ROWS*COLS, ROWS*COLS, ROWS*COLS, 4))
+    for primary_cop_pos in range(game._start, game._end + 1):
+        for secondary_cop_pos in range(game._start, game._end + 1):
+            for tertiary_cop_pos in range(game._start, game._end + 1):
+                for thief_pos in range(game._start, game._end + 1):
+                        q_table1[primary_cop_pos, secondary_cop_pos, tertiary_cop_pos, thief_pos, :] = [np.random.uniform(-1, 1) for i in range(4)]
+                        q_table2[primary_cop_pos, secondary_cop_pos, tertiary_cop_pos, thief_pos, :] = [np.random.uniform(-1, 1) for i in range(4)]
+                        q_table3[primary_cop_pos, secondary_cop_pos, tertiary_cop_pos, thief_pos, :] = [np.random.uniform(-1, 1) for i in range(4)]
 
-    # with open(f'Models/qtable_1_init.pickle', 'wb') as f:
-    #     pickle.dump(q_table1, f)
-    # with open(f'Models/qtable_2_init.pickle', 'wb') as f:
-    #     pickle.dump(q_table2, f)
-    # with open(f'Models/qtable_3_init.pickle', 'wb') as f:
-    #     pickle.dump(q_table3, f)
+    with open(f'Models/qtable_1_init.pickle', 'wb') as f:
+        pickle.dump(q_table1, f)
+    with open(f'Models/qtable_2_init.pickle', 'wb') as f:
+        pickle.dump(q_table2, f)
+    with open(f'Models/qtable_3_init.pickle', 'wb') as f:
+        pickle.dump(q_table3, f)
 
-    with open(f'Models/qtable_1_init.pickle', 'rb') as f:
-        q_table1 = pickle.load(f)
-    with open(f'Models/qtable_2_init.pickle', 'rb') as f:
-        q_table2 = pickle.load(f)
-    with open(f'Models/qtable_3_init.pickle', 'rb') as f:
-        q_table3 = pickle.load(f)
+    # with open(f'Models/qtable_1_init.pickle', 'rb') as f:
+    #     q_table1 = pickle.load(f)
+    # with open(f'Models/qtable_2_init.pickle', 'rb') as f:
+    #     q_table2 = pickle.load(f)
+    # with open(f'Models/qtable_3_init.pickle', 'rb') as f:
+    #     q_table3 = pickle.load(f)
 
 else:
     with open(start_q_table1, 'rb') as f:
