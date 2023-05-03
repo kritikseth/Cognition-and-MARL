@@ -12,7 +12,7 @@ WINDOW_HEIGHT = blockSize * ROWS
 WINDOW_WIDTH = blockSize * COLS
 BLACK, RED = (0, 0, 0), (255, 0, 0)
 
-def main():
+def main(model_type='common'):
     global screen, CLOCK
     agent, action = None, None
     pygame.init()
@@ -42,25 +42,29 @@ def main():
     game.setup_agents({'x': game.random_state()})
     drawGrid(game.grid, objects_original, '1')
     pygame.display.update()
-    action_done = False
 
-    count_1_match = 0
-    count_2_match = 0
-    count_3_match = 0
+    action_done = False
+    action_direction = ['up', 'down', 'left', 'right']
+
+    count_1_match, count_2_match, count_3_match = 0, 0, 0
     total_steps = 1
-    separate = True
-    if separate:
-        with open(f'Models/qtable_1.pickle', 'rb') as f:
-            q_table1 = pickle.load(f)
-        with open(f'Models/qtable_2.pickle', 'rb') as f:
-            q_table2 = pickle.load(f)
-        with open(f'Models/qtable_3.pickle', 'rb') as f:
-            q_table3 = pickle.load(f)
-    else:
-        with open(f'Models/qtable_common.pickle', 'rb') as f:
+    
+    if model_type == 'common':
+        start_q_table1 = 'Models/qtable_common.pickle' # None or Filename
+        with open(start_q_table1, 'rb') as f:
             q_table1 = pickle.load(f)
             q_table2 = q_table1
             q_table3 = q_table1
+    elif model_type == 'separate':
+        start_q_table1 = 'Models/qtable_1.pickle' # None or Filename
+        start_q_table2 = 'Models/qtable_2.pickle' # None or Filename
+        start_q_table3 = 'Models/qtable_3.pickle' # None or Filename
+        with open(start_q_table1, 'rb') as f:
+            q_table1 = pickle.load(f)
+        with open(start_q_table2, 'rb') as f:
+            q_table2 = pickle.load(f)
+        with open(start_q_table3, 'rb') as f:
+            q_table3 = pickle.load(f)
 
     while True:
         next = True
@@ -90,17 +94,20 @@ def main():
 
                         if agent == '1':
                             model1_prediction = perform_action(cop1_state, q_table1, 0.0)
-                            if action == model1_prediction:
+                            print(agent, action_direction[model1_prediction])
+                            if action == action_direction[model1_prediction]:
                                 count_1_match += 1
 
                         elif agent == '2':
                             model2_prediction = perform_action(cop2_state, q_table2, 0.0)
-                            if action == model2_prediction:
+                            print(agent, action_direction[model2_prediction])
+                            if action == action_direction[model2_prediction]:
                                 count_2_match += 1
 
                         elif agent == '3':
                             model3_prediction = perform_action(cop3_state, q_table3, 0.0)
-                            if action == model3_prediction:
+                            print(agent, action_direction[model3_prediction])
+                            if action == action_direction[model3_prediction]:
                                 count_3_match += 1
                         
                         drawGrid(game.grid, objects_original)
@@ -130,10 +137,10 @@ def main():
         thief_pos = game.locate_agent('x')
         if game._agent_location['x'] == 'end':
             total_matches = count_1_match + count_2_match + count_3_match
-            print('Percentage Actions Matched : Cop 1 :', count_1_match / total_steps)
-            print('Percentage Actions Matched : Cop 2 :', count_2_match / total_steps)
-            print('Percentage Actions Matched : Cop 2 :', count_3_match / total_steps)
-            print('Percentage Actions Matched         :', total_matches / (total_steps*3))
+            print('Percentage Actions Matched : Cop 1 :', count_1_match * 100 / total_steps)
+            print('Percentage Actions Matched : Cop 2 :', count_2_match * 100 / total_steps)
+            print('Percentage Actions Matched : Cop 2 :', count_3_match * 100 / total_steps)
+            print('Percentage Actions Matched         :', total_matches * 100 / (total_steps*3))
             print('Total Number Of Steps To Catch     :', total_steps)
             pygame.quit()
             sys.exit()
@@ -239,4 +246,7 @@ def drawGrid(grid, objects, agent=None):
         X += 1
 
 if __name__ == '__main__':
-    main()
+    model_type = 'common'
+    if len(sys.argv) == 2:
+        model_type = sys.argv[1]
+    main(model_type)

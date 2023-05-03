@@ -15,7 +15,7 @@ from RushHour4.utils import *
 import pickle
 
 ROWS, COLS = 8, 8
-EPISODES = 10
+EPISODES = 100
 MOVE_PENALTY = 1
 COLLISION_PENALTY = 100
 CATCH_REWARD = 400
@@ -26,10 +26,18 @@ EPS_DECAY = 0.9999965
 LEARNING_RATE = 0.1
 DISCOUNT = 0.95
 
-SHOW = True
+SHOW = False
 SHOW_EVERY = 1
-
 blockSize = 100
+
+model_type = 'common'
+if len(sys.argv) == 2:
+    model_type = sys.argv[1]
+if len(sys.argv) == 3:
+    if sys.argv[2] == 'show':
+        SHOW = True
+        EPISODES = 10
+
 if SHOW:
     global screen, CLOCK
     agent, action = None, None
@@ -42,7 +50,6 @@ if SHOW:
 mymap = Map(ROWS, COLS)
 game = FourAgentGame(mymap, blockSize)
 
-model_type = sys.argv[1]
 
 if model_type == 'common':
     start_q_table1 = 'Models/qtable_common.pickle' # None or Filename
