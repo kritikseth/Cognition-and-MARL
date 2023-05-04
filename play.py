@@ -158,7 +158,7 @@ def main(model_type='common'):
                 total_matches = count_1_match + count_2_match + count_3_match
                 print('Percentage Actions Matched : Cop 1 :', count_1_match / total_steps)
                 print('Percentage Actions Matched : Cop 2 :', count_2_match / total_steps)
-                print('Percentage Actions Matched : Cop 2 :', count_3_match / total_steps)
+                print('Percentage Actions Matched : Cop 3 :', count_3_match / total_steps)
                 print('Percentage Actions Matched         :', total_matches / (total_steps*3))
                 print('Total Number Of Steps To Catch     :', total_steps)
                 pygame.quit()

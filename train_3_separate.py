@@ -187,6 +187,6 @@ with open(f'Models/qtable_3.pickle', 'wb') as f:
 catch_count_total = (catch_count1 + catch_count2 + catch_count3)
 print('Catching Percentage : Cop 1 :', catch_count1 * 100 / catch_count_total)
 print('Catching Percentage : Cop 2 :', catch_count2 * 100 / catch_count_total)
-print('Catching Percentage : Cop 2 :', catch_count3 * 100 / catch_count_total)
+print('Catching Percentage : Cop 3 :', catch_count3 * 100 / catch_count_total)
 print('Catching Percentage : Total :', catch_count_total * 100 / EPISODES)
 print('Average Steps To Catch      :', STEPS - (sum(episode_rewards)/len(episode_rewards)))
