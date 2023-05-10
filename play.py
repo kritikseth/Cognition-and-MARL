@@ -186,11 +186,24 @@ def main(model_type='common'):
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                total_matches = count_1_match + count_2_match + count_3_match
-                print('Percentage Actions Matched : Cop 1 :', count_1_match / total_steps)
-                print('Percentage Actions Matched : Cop 2 :', count_2_match / total_steps)
-                print('Percentage Actions Matched : Cop 3 :', count_3_match / total_steps)
-                print('Percentage Actions Matched         :', total_matches / (total_steps*3))
+                total_matches_human = match_count_human_1 + match_count_human_2 + match_count_human_3
+                print("Human Performance VS Models:")
+                print('Percentage Actions Matched : Q Table 1 :', match_count_human_1 * 100 / total_steps)
+                print('Percentage Actions Matched : Q Table 2 :', match_count_human_2 * 100 / total_steps)
+                print('Percentage Actions Matched : Q Table 3 :', match_count_human_3 * 100 / total_steps)
+                print()
+                print('Percentage Actions Matched with Independent Q Tables :', total_matches_human * 100 / (total_steps*3))
+                print('Percentage Actions Matched with Shared Q Tables      :', match_count_human_common * 100 / (total_steps*3))
+
+
+                total_matches_common = match_count_common_1 + match_count_common_2 + match_count_common_3
+                print("\n\n\n")
+                print("Shared Q Table VS Independent Q tables:")
+                print('Percentage Actions Matched : Q Table 1 :', match_count_common_1 * 100 / total_steps)
+                print('Percentage Actions Matched : Q Table 2 :', match_count_common_2 * 100 / total_steps)
+                print('Percentage Actions Matched : Q Table 3 :', match_count_common_3 * 100 / total_steps)
+                print('Percentage Actions Matched with Independent Q Tables :', total_matches_common * 100 / (total_steps*3))
+
                 print('Total Number Of Steps To Catch     :', total_steps)
                 pygame.quit()
                 sys.exit()
