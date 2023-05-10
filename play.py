@@ -97,9 +97,13 @@ def main(model_type='common'):
 
                         if agent == '1':
                             model_1_prediction = perform_action(cop1_state, q_table_1, 0.0)
+                            if model_1_prediction<0 or model_1_prediction>4:
+                                model_1_prediction = 0
                             if action == action_direction[model_1_prediction]:
                                 match_count_human_1 += 1
                             model_common_prediction = perform_action(cop1_state, q_table_common, 0.0)
+                            if model_common_prediction<0 or model_common_prediction>4:
+                                model_common_prediction = 0
                             if action == action_direction[model_common_prediction]:
                                 match_count_human_common += 1
                             if action_direction[model_1_prediction] == action_direction[model_common_prediction]:
@@ -107,9 +111,13 @@ def main(model_type='common'):
 
                         elif agent == '2':
                             model_2_prediction = perform_action(cop2_state, q_table_2, 0.0)
+                            if model_2_prediction<0 or model_2_prediction>4:
+                                model_2_prediction = 0
                             if action == action_direction[model_2_prediction]:
                                 match_count_human_2 += 1
                             model_common_prediction = perform_action(cop2_state, q_table_common, 0.0)
+                            if model_common_prediction<0 or model_common_prediction>4:
+                                model_common_prediction = 0
                             if action == action_direction[model_common_prediction]:
                                 match_count_human_common += 1
                             if action_direction[model_2_prediction] == action_direction[model_common_prediction]:
@@ -117,9 +125,13 @@ def main(model_type='common'):
 
                         elif agent == '3':
                             model_3_prediction = perform_action(cop3_state, q_table_3, 0.0)
+                            if model_3_prediction<0 or model_3_prediction>4:
+                                model_3_prediction = 0
                             if action == action_direction[model_3_prediction]:
                                 match_count_human_3 += 1
                             model_common_prediction = perform_action(cop3_state, q_table_common, 0.0)
+                            if model_common_prediction<0 or model_common_prediction>4:
+                                model_common_prediction = 0
                             if action == action_direction[model_common_prediction]:
                                 match_count_human_common += 1
                             if action_direction[model_3_prediction] == action_direction[model_common_prediction]:
