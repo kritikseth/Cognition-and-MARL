@@ -46,25 +46,28 @@ def main(model_type='common'):
     action_done = False
     action_direction = ['up', 'down', 'left', 'right']
 
-    count_1_match, count_2_match, count_3_match = 0, 0, 0
+    match_count_human_common = 0
+    match_count_human_1 = 0
+    match_count_human_2 = 0
+    match_count_human_3 = 0
+    match_count_common_1 = 0
+    match_count_common_2 = 0
+    match_count_common_3 = 0
+
     total_steps = 1
     
-    if model_type == 'common':
-        start_q_table1 = 'Models/qtable_common.pickle' # None or Filename
-        with open(start_q_table1, 'rb') as f:
-            q_table1 = pickle.load(f)
-            q_table2 = q_table1
-            q_table3 = q_table1
-    elif model_type == 'separate':
-        start_q_table1 = 'Models/qtable_1.pickle' # None or Filename
-        start_q_table2 = 'Models/qtable_2.pickle' # None or Filename
-        start_q_table3 = 'Models/qtable_3.pickle' # None or Filename
-        with open(start_q_table1, 'rb') as f:
-            q_table1 = pickle.load(f)
-        with open(start_q_table2, 'rb') as f:
-            q_table2 = pickle.load(f)
-        with open(start_q_table3, 'rb') as f:
-            q_table3 = pickle.load(f)
+    start_q_table_common = 'Models/qtable_common.pickle' # None or Filename
+    with open(start_q_table_common, 'rb') as f:
+        q_table_common = pickle.load(f)
+    start_q_table_1 = 'Models/qtable_1.pickle' # None or Filename
+    with open(start_q_table_1, 'rb') as f:
+        q_table_1 = pickle.load(f)
+    start_q_table_2 = 'Models/qtable_2.pickle' # None or Filename
+    with open(start_q_table_2, 'rb') as f:
+        q_table_2 = pickle.load(f)
+    start_q_table_3 = 'Models/qtable_3.pickle' # None or Filename
+    with open(start_q_table_3, 'rb') as f:
+        q_table_3 = pickle.load(f)
 
     while True:
         next = True
@@ -93,19 +96,34 @@ def main(model_type='common'):
                         game.update({agent: action})
 
                         if agent == '1':
-                            model1_prediction = perform_action(cop1_state, q_table1, 0.0)
-                            if action == action_direction[model1_prediction]:
-                                count_1_match += 1
+                            model_1_prediction = perform_action(cop1_state, q_table_1, 0.0)
+                            if action == action_direction[model_1_prediction]:
+                                match_count_human_1 += 1
+                            model_common_prediction = perform_action(cop1_state, q_table_common, 0.0)
+                            if action == action_direction[model_common_prediction]:
+                                match_count_human_common += 1
+                            if action_direction[model_1_prediction] == action_direction[model_common_prediction]:
+                                match_count_common_1 += 1
 
                         elif agent == '2':
-                            model2_prediction = perform_action(cop2_state, q_table2, 0.0)
-                            if model2_prediction not in (0,1,2,3) or  action == action_direction[model2_prediction]:
-                                count_2_match += 1
+                            model_2_prediction = perform_action(cop2_state, q_table_2, 0.0)
+                            if action == action_direction[model_2_prediction]:
+                                match_count_human_2 += 1
+                            model_common_prediction = perform_action(cop2_state, q_table_common, 0.0)
+                            if action == action_direction[model_common_prediction]:
+                                match_count_human_common += 1
+                            if action_direction[model_2_prediction] == action_direction[model_common_prediction]:
+                                match_count_common_2 += 1
 
                         elif agent == '3':
-                            model3_prediction = perform_action(cop3_state, q_table3, 0.0)
-                            if model3_prediction not in (0,1,2,3) or action == action_direction[model3_prediction]:
-                                count_3_match += 1
+                            model_3_prediction = perform_action(cop3_state, q_table_3, 0.0)
+                            if action == action_direction[model_3_prediction]:
+                                match_count_human_3 += 1
+                            model_common_prediction = perform_action(cop3_state, q_table_common, 0.0)
+                            if action == action_direction[model_common_prediction]:
+                                match_count_human_common += 1
+                            if action_direction[model_3_prediction] == action_direction[model_common_prediction]:
+                                match_count_common_3 += 1
                         
                         drawGrid(game.grid, objects_original)
                         pygame.display.update()
@@ -133,11 +151,24 @@ def main(model_type='common'):
         time.sleep(1)
         thief_pos = game.locate_agent('x')
         if game._agent_location['x'] == 'end':
-            total_matches = count_1_match + count_2_match + count_3_match
-            print('Percentage Actions Matched : Cop 1 :', count_1_match * 100 / total_steps)
-            print('Percentage Actions Matched : Cop 2 :', count_2_match * 100 / total_steps)
-            print('Percentage Actions Matched : Cop 2 :', count_3_match * 100 / total_steps)
-            print('Percentage Actions Matched         :', total_matches * 100 / (total_steps*3))
+            total_matches_human = match_count_human_1 + match_count_human_2 + match_count_human_3
+            print("Human Performance VS Models:")
+            print('Percentage Actions Matched : Q Table 1 :', match_count_human_1 * 100 / total_steps)
+            print('Percentage Actions Matched : Q Table 2 :', match_count_human_2 * 100 / total_steps)
+            print('Percentage Actions Matched : Q Table 3 :', match_count_human_3 * 100 / total_steps)
+            print()
+            print('Percentage Actions Matched with Independent Q Tables :', total_matches_human * 100 / (total_steps*3))
+            print('Percentage Actions Matched with Shared Q Tables      :', match_count_human_common * 100 / (total_steps*3))
+
+
+            total_matches_common = match_count_common_1 + match_count_common_2 + match_count_common_3
+            print("\n\n\n")
+            print("Shared Q Table VS Independent Q tables:")
+            print('Percentage Actions Matched : Q Table 1 :', match_count_common_1 * 100 / total_steps)
+            print('Percentage Actions Matched : Q Table 2 :', match_count_common_2 * 100 / total_steps)
+            print('Percentage Actions Matched : Q Table 3 :', match_count_common_3 * 100 / total_steps)
+            print('Percentage Actions Matched with Independent Q Tables :', total_matches_common * 100 / (total_steps*3))
+
             print('Total Number Of Steps To Catch     :', total_steps)
             pygame.quit()
             sys.exit()
